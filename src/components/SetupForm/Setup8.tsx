@@ -63,9 +63,7 @@ export const Setup8: React.FC = () => {
 						<span className="label-text">{ProfileDescriptions.day_volume}</span>
 					</label>
 					<select className="select w-full" {...methods.register("day_volume")}>
-						<option selected disabled>
-							Choose one
-						</option>
+						<option disabled>Choose one</option>
 						{Object.values(Volume).map((value) => (
 							<option key={value}>{value}</option>
 						))}

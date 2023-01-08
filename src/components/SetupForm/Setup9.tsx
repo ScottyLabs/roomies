@@ -68,9 +68,7 @@ export const Setup9: React.FC = () => {
 						className="select w-full"
 						{...methods.register("night_volume")}
 					>
-						<option selected disabled>
-							Choose one
-						</option>
+						<option disabled>Choose one</option>
 						{Object.values(Volume).map((value) => (
 							<option key={value}>{value}</option>
 						))}

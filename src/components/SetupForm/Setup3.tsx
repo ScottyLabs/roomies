@@ -39,9 +39,7 @@ export const Setup3: React.FC = () => {
 						className="select w-full"
 						{...methods.register("assigned_sex")}
 					>
-						<option selected disabled>
-							Pick one
-						</option>
+						<option disabled>Pick one</option>
 						{Object.values(Sex).map((value) => (
 							<option key={value}>{value}</option>
 						))}

@@ -60,9 +60,7 @@ export const Setup2: React.FC = () => {
 						<span className="label-text">{ProfileDescriptions.status}</span>
 					</label>
 					<select className="select w-full" {...methods.register("status")}>
-						<option selected disabled>
-							Pick one
-						</option>
+						<option disabled>Pick one</option>
 						{Object.values(Status).map((status) => (
 							<option key={status}>{status}</option>
 						))}

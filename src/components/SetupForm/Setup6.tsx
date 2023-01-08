@@ -54,9 +54,7 @@ export const Setup6: React.FC = () => {
 						multiple
 						{...methods.register("roommate_preferred_schools")}
 					>
-						<option selected disabled>
-							Choose one or more
-						</option>
+						<option disabled>Choose one or more</option>
 						{Object.values(School).map((value) => (
 							<option key={value}>{value}</option>
 						))}
