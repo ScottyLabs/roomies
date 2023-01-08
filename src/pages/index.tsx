@@ -12,8 +12,6 @@ const Home: NextPage = () => {
 
 	const [exploreHover, setExploreHover] = useState(false);
 
-	console.log(exploreHover);
-
 	return (
 		<BaseLayout>
 			<h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
