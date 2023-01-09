@@ -25,7 +25,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 					<div className="flex-none lg:hidden">
 						<label
 							htmlFor="my-drawer-2"
-							className="swap btn-ghost swap-rotate btn-circle btn"
+							className="swap-rotate swap btn-ghost btn-circle btn"
 						>
 							<input type="checkbox" />
 							<FaBars className="swap-off fill-current" />
@@ -39,14 +39,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 								<span className="text-base-content">!</span>
 							</div>
 						</Link>
-						<a
-							href="/docs/changelog"
-							className="link-hover link font-mono text-xs text-opacity-50"
-						>
-							<div data-tip="Changelog" className="tooltip tooltip-bottom">
-								0.0.1
-							</div>
-						</a>
+						<span className="link-hover link font-mono text-xs">0.0.1</span>
 					</div>
 					<div className="navbar-end flex-1">
 						<div className="dropdown-end dropdown">
@@ -97,14 +90,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 								<span className="text-base-content">!</span>
 							</div>
 						</Link>
-						<a
-							href="/docs/changelog"
-							className="link-hover link font-mono text-xs text-opacity-50"
-						>
-							<div data-tip="Changelog" className="tooltip tooltip-bottom">
-								0.0.1
-							</div>
-						</a>
+						<span className="link-hover link font-mono text-xs">0.0.1</span>
 					</div>
 					<ul className="menu  p-4 text-base-content">
 						<li className="menu-title">
