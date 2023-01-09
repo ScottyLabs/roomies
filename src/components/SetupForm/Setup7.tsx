@@ -59,7 +59,7 @@ export const Setup7: React.FC = () => {
 						</span>
 					</label>
 					<select
-						className="select select-multiple w-full"
+						className="select w-full"
 						multiple
 						{...methods.register("bathroom_preference")}
 					>

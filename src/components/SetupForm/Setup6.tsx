@@ -50,7 +50,7 @@ export const Setup6: React.FC = () => {
 						</span>
 					</label>
 					<select
-						className="select select-multiple w-full"
+						className="select w-full"
 						multiple
 						{...methods.register("roommate_preferred_schools")}
 					>

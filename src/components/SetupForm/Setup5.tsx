@@ -32,7 +32,7 @@ export const Setup5: React.FC = () => {
 						<span className="label-text">{ProfileDescriptions.schools}</span>
 					</label>
 					<select
-						className="select select-multiple w-full"
+						className="select w-full"
 						multiple
 						{...methods.register("schools")}
 					>
