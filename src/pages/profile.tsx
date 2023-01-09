@@ -41,7 +41,7 @@ const Profile: NextPage = () => {
 	useEffect(() => {
 		if (!profile) return;
 		methods.reset(profile);
-	}, [profile]);
+	}, [profile, methods]);
 
 	if (!session || !profile)
 		return (
@@ -80,7 +80,7 @@ const Profile: NextPage = () => {
 					})}
 				>
 					<div className="divider" />
-					<h4 className="text-lg font-bold">General</h4>
+					<h4 className="text-lg font-bold">General Information</h4>
 					<div className="mx-2">
 						<div className="flex items-center justify-between gap-2">
 							<div>
@@ -152,11 +152,7 @@ const Profile: NextPage = () => {
 									</span>
 								</p>
 							</div>
-							<select
-								className="select select-multiple"
-								multiple
-								{...methods.register("assigned_sex")}
-							>
+							<select className="select" {...methods.register("assigned_sex")}>
 								{Object.values(Sex).map((sex) => (
 									<option key={sex} value={sex}>
 										{sex}
@@ -248,26 +244,6 @@ const Profile: NextPage = () => {
 					<div className="mx-2">
 						<div className="flex items-center justify-between gap-2">
 							<div>
-								<label className="font-bold">
-									{ProfileLabels.health_concerns}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.health_concerns}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.health_concerns?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("health_concerns")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
 								<label className="font-bold">{ProfileLabels.schools}</label>
 								<p className="text-sm font-thin">
 									{ProfileDescriptions.schools}{" "}
@@ -277,7 +253,7 @@ const Profile: NextPage = () => {
 								</p>
 							</div>
 							<select
-								className="select select-multiple"
+								className="select"
 								multiple
 								{...methods.register("schools")}
 							>
@@ -331,7 +307,7 @@ const Profile: NextPage = () => {
 								</p>
 							</div>
 							<select
-								className="select select-multiple"
+								className="select"
 								multiple
 								{...methods.register("roommate_preferred_schools")}
 							>
@@ -359,7 +335,7 @@ const Profile: NextPage = () => {
 								</p>
 							</div>
 							<select
-								className="select select-multiple"
+								className="select"
 								multiple
 								{...methods.register("preferred_dorm")}
 							>
@@ -385,7 +361,7 @@ const Profile: NextPage = () => {
 								</p>
 							</div>
 							<select
-								className="select select-multiple"
+								className="select"
 								multiple
 								{...methods.register("bathroom_preference")}
 							>
@@ -416,7 +392,7 @@ const Profile: NextPage = () => {
 						</div>
 					</div>
 					<div className="divider" />
-					<h4 className="text-lg font-bold">Mornings and Evenings</h4>
+					<h4 className="text-lg font-bold">Day Time</h4>
 					<div className="mx-2">
 						<div className="flex items-center justify-between gap-2">
 							<div>
@@ -467,11 +443,7 @@ const Profile: NextPage = () => {
 									</span>
 								</p>
 							</div>
-							<select
-								className="select select-multiple"
-								multiple
-								{...methods.register("day_volume")}
-							>
+							<select className="select" {...methods.register("day_volume")}>
 								{Object.values(Volume).map((volume) => (
 									<option key={volume} value={volume}>
 										{volume}
@@ -480,6 +452,8 @@ const Profile: NextPage = () => {
 							</select>
 						</div>
 					</div>
+					<div className="divider" />
+					<h4 className="text-lg font-bold">Night Time</h4>
 					<div className="mx-2">
 						<div className="flex items-center justify-between gap-2">
 							<div>
@@ -492,7 +466,7 @@ const Profile: NextPage = () => {
 								</p>
 							</div>
 							<input
-								type="text"
+								type="time"
 								className="input"
 								{...methods.register("sleep")}
 							/>
@@ -529,11 +503,7 @@ const Profile: NextPage = () => {
 									</span>
 								</p>
 							</div>
-							<select
-								className="select select-multiple"
-								multiple
-								{...methods.register("night_volume")}
-							>
+							<select className="select" {...methods.register("night_volume")}>
 								{Object.values(Volume).map((volume) => (
 									<option key={volume} value={volume}>
 										{volume}
@@ -561,7 +531,7 @@ const Profile: NextPage = () => {
 						</div>
 					</div>
 					<div className="divider" />
-					<h4 className="text-lg font-bold">Daily Life</h4>
+					<h4 className="text-lg font-bold">Habits</h4>
 					<div className="mx-2">
 						<div className="flex items-center justify-between gap-2">
 							<div>
@@ -573,11 +543,7 @@ const Profile: NextPage = () => {
 									</span>
 								</p>
 							</div>
-							<select
-								className="select select-multiple"
-								multiple
-								{...methods.register("shower_time")}
-							>
+							<select className="select" {...methods.register("shower_time")}>
 								{Object.values(ShowerTime).map((showerTime) => (
 									<option key={showerTime} value={showerTime}>
 										{showerTime}
@@ -619,7 +585,7 @@ const Profile: NextPage = () => {
 							</div>
 							<input
 								type="range"
-								className="range max-w-xs"
+								className="range range-xs max-w-xs"
 								{...methods.register("neatness")}
 							/>
 						</div>
@@ -639,7 +605,7 @@ const Profile: NextPage = () => {
 							</div>
 							<input
 								type="range"
-								className="range max-w-xs"
+								className="range range-xs max-w-xs"
 								{...methods.register("social_energy_level")}
 							/>
 						</div>
@@ -658,7 +624,7 @@ const Profile: NextPage = () => {
 							<input
 								type="checkbox"
 								className="toggle"
-								{...methods.register("drugs")}
+								{...methods.register("alcohol")}
 							/>
 						</div>
 					</div>
@@ -677,6 +643,80 @@ const Profile: NextPage = () => {
 								type="checkbox"
 								className="toggle"
 								{...methods.register("drugs")}
+							/>
+						</div>
+					</div>
+					<div className="mx-2">
+						<div className="flex items-center justify-between gap-2">
+							<div>
+								<label className="font-bold">{ProfileLabels.parties}</label>
+								<p className="text-sm font-thin">
+									{ProfileDescriptions.parties}{" "}
+									<span className="text-xs text-red-700">
+										{methods.formState.errors.parties?.message}
+									</span>
+								</p>
+							</div>
+							<input
+								type="text"
+								className="input"
+								{...methods.register("parties")}
+							/>
+						</div>
+					</div>
+					<div className="divider" />
+					<h4 className="text-lg font-bold">Artistic Views</h4>
+					<div className="mx-2">
+						<div className="flex items-center justify-between gap-2">
+							<div>
+								<label className="font-bold">{ProfileLabels.music}</label>
+								<p className="text-sm font-thin">
+									{ProfileDescriptions.music}{" "}
+									<span className="text-xs text-red-700">
+										{methods.formState.errors.music?.message}
+									</span>
+								</p>
+							</div>
+							<input
+								type="text"
+								className="input"
+								{...methods.register("music")}
+							/>
+						</div>
+					</div>
+					<div className="mx-2">
+						<div className="flex items-center justify-between gap-2">
+							<div>
+								<label className="font-bold">{ProfileLabels.hobbies}</label>
+								<p className="text-sm font-thin">
+									{ProfileDescriptions.hobbies}{" "}
+									<span className="text-xs text-red-700">
+										{methods.formState.errors.hobbies?.message}
+									</span>
+								</p>
+							</div>
+							<input
+								type="text"
+								className="input"
+								{...methods.register("hobbies")}
+							/>
+						</div>
+					</div>
+					<div className="mx-2">
+						<div className="flex items-center justify-between gap-2">
+							<div>
+								<label className="font-bold">{ProfileLabels.aesthetic}</label>
+								<p className="text-sm font-thin">
+									{ProfileDescriptions.aesthetic}{" "}
+									<span className="text-xs text-red-700">
+										{methods.formState.errors.aesthetic?.message}
+									</span>
+								</p>
+							</div>
+							<input
+								type="text"
+								className="input"
+								{...methods.register("aesthetic")}
 							/>
 						</div>
 					</div>
@@ -723,58 +763,25 @@ const Profile: NextPage = () => {
 					<div className="mx-2">
 						<div className="flex items-center justify-between gap-2">
 							<div>
-								<label className="font-bold">{ProfileLabels.music}</label>
+								<label className="font-bold">
+									{ProfileLabels.personality_test}
+								</label>
 								<p className="text-sm font-thin">
-									{ProfileDescriptions.music}{" "}
+									{ProfileDescriptions.personality_test}{" "}
 									<span className="text-xs text-red-700">
-										{methods.formState.errors.music?.message}
+										{methods.formState.errors.personality_test?.message}
 									</span>
 								</p>
 							</div>
 							<input
 								type="text"
 								className="input"
-								{...methods.register("music")}
+								{...methods.register("personality_test")}
 							/>
 						</div>
 					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.aesthetic}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.aesthetic}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.aesthetic?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("aesthetic")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.hobbies}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.hobbies}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.hobbies?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("hobbies")}
-							/>
-						</div>
-					</div>
-
+					<div className="divider" />
+					<h4 className="text-lg font-bold">Extras</h4>
 					<div className="mx-2">
 						<div className="flex items-center justify-between gap-2">
 							<div>
