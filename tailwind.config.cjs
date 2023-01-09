@@ -14,7 +14,7 @@ module.exports = {
 					primary: "hsl(280,100%,60%)",
 					secondary: "#378AA9",
 					accent: "#95006E",
-					neutral: "#dcdcdc",
+					neutral: "#191D24",
 					"base-100": "#2C2F33",
 					info: "#1192e8",
 					success: "#198038",
