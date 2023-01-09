@@ -40,7 +40,6 @@ export const Setup7: React.FC = () => {
 						multiple
 						{...methods.register("preferred_dorm")}
 					>
-						<option disabled>Choose one or more</option>
 						{Object.values(Dorm).map((value) => (
 							<option key={value}>{value}</option>
 						))}
@@ -64,7 +63,6 @@ export const Setup7: React.FC = () => {
 						multiple
 						{...methods.register("bathroom_preference")}
 					>
-						<option disabled>Choose one or more</option>
 						{Object.values(Bathroom).map((value) => (
 							<option key={value}>{value}</option>
 						))}

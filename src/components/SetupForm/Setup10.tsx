@@ -40,7 +40,6 @@ export const Setup10: React.FC = () => {
 						className="select w-full"
 						{...methods.register("shower_time")}
 					>
-						<option disabled>Choose one</option>
 						{Object.values(ShowerTime).map((value) => (
 							<option key={value}>{value}</option>
 						))}
