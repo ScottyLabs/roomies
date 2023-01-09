@@ -1,4 +1,4 @@
-import type { Profile, Status } from "@prisma/client";
+import type { Profile } from "@prisma/client";
 
 export type ProfileKeys = keyof Omit<Profile, "id" | "userId">;
 
@@ -103,7 +103,7 @@ export const SetupSteps = [
 
 export type SetupStep = (typeof SetupSteps)[number];
 
-export const SetupSections: Record<ProfileKeys, SetupStep> = {
+export const SetupSections = {
 	aesthetic: "Artistic Views",
 	alcohol: "The Fun Life",
 	assigned_sex: "Identity",
@@ -140,10 +140,10 @@ export const SetupSections: Record<ProfileKeys, SetupStep> = {
 	time_to_ready: "Daytime",
 	wake: "Daytime",
 	year: "General Info",
-};
+} satisfies Record<ProfileKeys, SetupStep>;
 
-export const StatusLabels: Record<Status, string> = {
-	AVAILABLE: "Not yet matched",
-	MAYBE: "Maybe",
-	NOT_AVAILABLE: "Not available",
-};
+export enum StatusLabels {
+	AVAILABLE = "Not yet matched",
+	MAYBE = "Maybe",
+	NOT_AVAILABLE = "Not available",
+}
