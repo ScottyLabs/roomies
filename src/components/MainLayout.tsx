@@ -21,7 +21,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 		<div className="drawer-mobile drawer">
 			<input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
 			<div className="drawer-content">
-				<div className="navbar sticky top-0 z-50 w-full bg-base-300 bg-opacity-50 backdrop-blur">
+				<nav className="navbar sticky top-0 z-50 w-full bg-base-300 bg-opacity-50 backdrop-blur">
 					<div className="flex-none lg:hidden">
 						<label
 							htmlFor="my-drawer-2"
@@ -77,7 +77,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 							<FaGithub className="h-6 w-6" />
 						</Link>
 					</div>
-				</div>
+				</nav>
 				<div className="flex flex-wrap gap-8 p-10">{children}</div>
 			</div>
 			<div className="drawer-side">
