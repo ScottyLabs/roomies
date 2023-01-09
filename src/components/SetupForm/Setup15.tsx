@@ -104,14 +104,14 @@ export const Setup15: React.FC = () => {
 													{SetupSections[entry as ProfileKeys]}
 												</Link>
 											</th>
-											<th>
+											<td>
 												{
 													ProfileLabels[
 														entry as keyof (typeof methods)["formState"]["errors"]
 													]
 												}
-											</th>
-											<th className="font-thin">{error.message}</th>
+											</td>
+											<td className="font-thin">{error.message}</td>
 										</tr>
 									)
 								)}
