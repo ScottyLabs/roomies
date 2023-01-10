@@ -58,7 +58,12 @@ export const ProfileCreateSchema = z.object({
 
 export const ProfileUpdateSchema = z.object({
 	id: z.string(),
-	year: z.coerce.number().int().optional(),
+	year: z.coerce
+		.number()
+		.int()
+		.min(new Date().getFullYear())
+		.max(new Date().getFullYear() + 4)
+		.optional(),
 	committed: z.boolean().optional(),
 	status: z.nativeEnum(Status).optional(),
 	assigned_sex: z.nativeEnum(Sex).optional(),
