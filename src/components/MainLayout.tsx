@@ -78,7 +78,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 						</Link>
 					</div>
 				</nav>
-				<div className="flex flex-wrap gap-8 p-10">{children}</div>
+				<div className="flex flex-wrap gap-4 p-4">{children}</div>
 			</div>
 			<div className="drawer-side">
 				<label htmlFor="my-drawer-2" className="drawer-overlay" />
