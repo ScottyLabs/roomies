@@ -1,13 +1,10 @@
-import type { GetServerSideProps, NextPage } from "next";
-import { unstable_getServerSession } from "next-auth";
+import type { NextPage } from "next";
 import type { BuiltInProviderType } from "next-auth/providers";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { FaDiscord } from "react-icons/fa";
 import { ConnectionList } from "../components/connections/ConnectionList";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
-import { prisma } from "../server/db/client";
-import { authOptions } from "./api/auth/[...nextauth]";
 
 const connections: Record<
 	string,
@@ -53,26 +50,3 @@ const Connections: NextPage = () => {
 };
 
 export default Connections;
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const session = await unstable_getServerSession(
-		context.req,
-		context.res,
-		authOptions
-	);
-
-	const profile = await prisma.profile.findUnique({
-		where: { userId: session?.user.id },
-	});
-
-	if (!profile) {
-		return {
-			redirect: {
-				destination: "/setup/1",
-				permanent: true,
-			},
-		};
-	}
-
-	return { props: {} };
-};

@@ -7,8 +7,7 @@ import {
 	Status,
 	Volume,
 } from "@prisma/client";
-import type { GetServerSideProps, NextPage } from "next";
-import { unstable_getServerSession } from "next-auth";
+import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect } from "react";
@@ -16,14 +15,12 @@ import { toast } from "react-hot-toast";
 import { FaCircleNotch, FaInfoCircle } from "react-icons/fa";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
 import { ProfileUpdateSchema } from "../server/common/schemas";
-import { prisma } from "../server/db/client";
 import { ProfileDescriptions, ProfileLabels } from "../types/constants";
 import { useZodForm } from "../utils";
 import { trpc } from "../utils/trpc";
-import { authOptions } from "./api/auth/[...nextauth]";
 
 const Profile: NextPage = () => {
-	const { data: session } = useSession();
+	const { data: session } = useSession({ required: true });
 	const { data: profile } = trpc.profile.getCurrent.useQuery();
 	const context = trpc.useContext();
 
@@ -849,26 +846,3 @@ const Profile: NextPage = () => {
 };
 
 export default Profile;
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const session = await unstable_getServerSession(
-		context.req,
-		context.res,
-		authOptions
-	);
-
-	const profile = await prisma.profile.findUnique({
-		where: { userId: session?.user.id },
-	});
-
-	if (!profile) {
-		return {
-			redirect: {
-				destination: "/setup/1",
-				permanent: true,
-			},
-		};
-	}
-
-	return { props: {} };
-};
