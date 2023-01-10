@@ -7,6 +7,7 @@ import {
 	Status,
 	Volume,
 } from "@prisma/client";
+import clsx from "clsx";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -15,9 +16,49 @@ import { toast } from "react-hot-toast";
 import { FaCircleNotch, FaInfoCircle } from "react-icons/fa";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
 import { ProfileUpdateSchema } from "../server/common/schemas";
-import { ProfileDescriptions, ProfileLabels } from "../types/constants";
+import {
+	ProfileDescriptions,
+	ProfileLabels,
+	type ProfileKeys,
+} from "../types/constants";
 import { useZodForm } from "../utils";
 import { trpc } from "../utils/trpc";
+
+type ProfileFieldProps = React.PropsWithChildren & {
+	methods: ReturnType<typeof useZodForm>;
+	prop: ProfileKeys;
+	transform?: boolean;
+};
+
+const ProfileField: React.FC<ProfileFieldProps> = ({
+	methods,
+	prop,
+	transform = true,
+	children,
+}) => {
+	return (
+		<div className="mx-2">
+			<div
+				className={clsx(
+					`${
+						transform && "sm:flex-center flex-col sm:flex-row"
+					} flex justify-between gap-2`
+				)}
+			>
+				<div>
+					<label className="font-bold">{ProfileLabels[prop]}</label>
+					<p className="text-sm font-thin">{ProfileDescriptions[prop]}</p>
+				</div>
+				<div className="flex flex-col items-end justify-end gap-1 sm:max-w-xs">
+					{children}
+					<div className="text-xs font-bold text-red-700">
+						<>{methods.formState.errors[prop]?.message}</>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
 
 const Profile: NextPage = () => {
 	const { data: session } = useSession({ required: true });
@@ -25,10 +66,7 @@ const Profile: NextPage = () => {
 	const context = trpc.useContext();
 
 	const profileMutation = trpc.profile.update.useMutation({
-		onSuccess: async () => {
-			await context.profile.invalidate();
-			toast.success("Profile updated");
-		},
+		onSuccess: async () => context.profile.invalidate(),
 	});
 
 	const methods = useZodForm({
@@ -72,748 +110,335 @@ const Profile: NextPage = () => {
 				<form
 					className="form-control m-2 gap-5"
 					onSubmit={methods.handleSubmit(async (values) => {
-						await profileMutation.mutateAsync(values);
-						methods.reset();
+						await toast.promise(profileMutation.mutateAsync(values), {
+							loading: "Saving...",
+							success: <b>Profile saved!</b>,
+							error: <b>Could not save.</b>,
+						});
 					})}
 				>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">General Information</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.year}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.year}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.year?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="number"
-								className="input"
-								{...methods.register("year")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.committed}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.committed}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.committed?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="checkbox"
-								className="toggle"
-								{...methods.register("committed")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.status}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.status}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.status?.message}
-									</span>
-								</p>
-							</div>
-							<select className="select" {...methods.register("status")}>
-								{Object.values(Status).map((status) => (
-									<option key={status} value={status}>
-										{status}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="year">
+						<input
+							type="number"
+							className="input w-full"
+							{...methods.register("year")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="committed" transform={false}>
+						<input
+							type="checkbox"
+							className="toggle"
+							{...methods.register("committed")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="status">
+						<select className="select w-full" {...methods.register("status")}>
+							{Object.values(Status).map((status) => (
+								<option key={status} value={status}>
+									{status}
+								</option>
+							))}
+						</select>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Identity</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.assigned_sex}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.assigned_sex}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.assigned_sex?.message}
-									</span>
-								</p>
-							</div>
-							<select className="select" {...methods.register("assigned_sex")}>
-								{Object.values(Sex).map((sex) => (
-									<option key={sex} value={sex}>
-										{sex}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.sexual_orientation}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.sexual_orientation}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.sexual_orientation?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("sexual_orientation")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.pronouns}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.pronouns}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.pronouns?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("pronouns")}
-							/>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="assigned_sex">
+						<select
+							className="select w-full"
+							{...methods.register("assigned_sex")}
+						>
+							{Object.values(Sex).map((sex) => (
+								<option key={sex} value={sex}>
+									{sex}
+								</option>
+							))}
+						</select>
+					</ProfileField>
+					<ProfileField methods={methods} prop="sexual_orientation">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("sexual_orientation")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="pronouns">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("pronouns")}
+						/>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Personal Information</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.location}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.location}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.location?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("location")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.health_concerns}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.health_concerns}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.health_concerns?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("health_concerns")}
-							/>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="location">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("location")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="health_concerns">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("health_concerns")}
+						/>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">School Preferences</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.schools}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.schools}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.schools?.message}
-									</span>
-								</p>
-							</div>
-							<select
-								className="select"
-								multiple
-								{...methods.register("schools")}
-							>
-								{Object.values(School).map((school) => (
-									<option key={school} value={school}>
-										{school}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="schools">
+						<select
+							className="select w-full"
+							multiple
+							{...methods.register("schools")}
+						>
+							{Object.values(School).map((school) => (
+								<option key={school} value={school}>
+									{school}
+								</option>
+							))}
+						</select>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Roommate Preferences</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.roommate_preferred_gender}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.roommate_preferred_gender}{" "}
-									<span className="text-xs text-red-700">
-										{
-											methods.formState.errors.roommate_preferred_gender
-												?.message
-										}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("roommate_preferred_gender")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.roommate_preferred_schools}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.roommate_preferred_schools}{" "}
-									<span className="text-xs text-red-700">
-										{
-											methods.formState.errors.roommate_preferred_schools
-												?.message
-										}
-									</span>
-								</p>
-							</div>
-							<select
-								className="select"
-								multiple
-								{...methods.register("roommate_preferred_schools")}
-							>
-								{Object.values(School).map((school) => (
-									<option key={school} value={school}>
-										{school}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="roommate_preferred_gender">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("roommate_preferred_gender")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="roommate_preferred_schools">
+						<select
+							className="select w-full"
+							multiple
+							{...methods.register("roommate_preferred_schools")}
+						>
+							{Object.values(School).map((school) => (
+								<option key={school} value={school}>
+									{school}
+								</option>
+							))}
+						</select>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Dorm Topics</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.preferred_dorm}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.preferred_dorm}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.preferred_dorm?.message}
-									</span>
-								</p>
-							</div>
-							<select
-								className="select"
-								multiple
-								{...methods.register("preferred_dorm")}
-							>
-								{Object.values(Dorm).map((dorm) => (
-									<option key={dorm} value={dorm}>
-										{dorm}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.bathroom_preference}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.bathroom_preference}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.bathroom_preference?.message}
-									</span>
-								</p>
-							</div>
-							<select
-								className="select"
-								multiple
-								{...methods.register("bathroom_preference")}
-							>
-								{Object.values(Bathroom).map((bathroom) => (
-									<option key={bathroom} value={bathroom}>
-										{bathroom}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.quiet_dorm}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.quiet_dorm}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.quiet_dorm?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="checkbox"
-								className="toggle"
-								{...methods.register("quiet_dorm")}
-							/>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="preferred_dorm">
+						<select
+							className="select w-full"
+							multiple
+							{...methods.register("preferred_dorm")}
+						>
+							{Object.values(Dorm).map((dorm) => (
+								<option key={dorm} value={dorm}>
+									{dorm}
+								</option>
+							))}
+						</select>
+					</ProfileField>
+					<ProfileField methods={methods} prop="bathroom_preference">
+						<select
+							className="select w-full"
+							multiple
+							{...methods.register("bathroom_preference")}
+						>
+							{Object.values(Bathroom).map((bathroom) => (
+								<option key={bathroom} value={bathroom}>
+									{bathroom}
+								</option>
+							))}
+						</select>
+					</ProfileField>
+					<ProfileField methods={methods} prop="quiet_dorm" transform={false}>
+						<input
+							type="checkbox"
+							className="toggle"
+							{...methods.register("quiet_dorm")}
+						/>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Day Time</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.wake}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.wake}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.wake?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="time"
-								className="input"
-								{...methods.register("wake")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.time_to_ready}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.time_to_ready}{" "}
-								</p>
-							</div>
-							<input
-								type="number"
-								step={1}
-								className="input"
-								{...methods.register("time_to_ready")}
-							/>
-						</div>
-						<span className="float-right mt-1 text-xs text-red-700">
-							{methods.formState.errors.time_to_ready?.message}
-						</span>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.day_volume}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.day_volume}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.day_volume?.message}
-									</span>
-								</p>
-							</div>
-							<select className="select" {...methods.register("day_volume")}>
-								{Object.values(Volume).map((volume) => (
-									<option key={volume} value={volume}>
-										{volume}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="wake">
+						<input
+							type="time"
+							className="input w-full"
+							{...methods.register("wake")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="time_to_ready">
+						<input
+							type="number"
+							step={1}
+							className="input w-full"
+							{...methods.register("time_to_ready")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="day_volume">
+						<select
+							className="select w-full"
+							{...methods.register("day_volume")}
+						>
+							{Object.values(Volume).map((volume) => (
+								<option key={volume} value={volume}>
+									{volume}
+								</option>
+							))}
+						</select>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Night Time</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.sleep}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.sleep}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.sleep?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="time"
-								className="input"
-								{...methods.register("sleep")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.sleep_needs}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.sleep_needs}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.sleep_needs?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("sleep_needs")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.night_volume}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.night_volume}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.night_volume?.message}
-									</span>
-								</p>
-							</div>
-							<select className="select" {...methods.register("night_volume")}>
-								{Object.values(Volume).map((volume) => (
-									<option key={volume} value={volume}>
-										{volume}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.snore}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.snore}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.snore?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="checkbox"
-								className="toggle"
-								{...methods.register("snore")}
-							/>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="sleep">
+						<input
+							type="time"
+							className="input w-full"
+							{...methods.register("sleep")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="sleep_needs">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("sleep_needs")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="night_volume">
+						<select
+							className="select w-full"
+							{...methods.register("night_volume")}
+						>
+							{Object.values(Volume).map((volume) => (
+								<option key={volume} value={volume}>
+									{volume}
+								</option>
+							))}
+						</select>
+					</ProfileField>
+					<ProfileField methods={methods} prop="snore" transform={false}>
+						<input
+							type="checkbox"
+							className="toggle"
+							{...methods.register("snore")}
+						/>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Habits</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.shower_time}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.shower_time}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.shower_time?.message}
-									</span>
-								</p>
-							</div>
-							<select className="select" {...methods.register("shower_time")}>
-								{Object.values(ShowerTime).map((showerTime) => (
-									<option key={showerTime} value={showerTime}>
-										{showerTime}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.study_preferences}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.study_preferences}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.study_preferences?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("study_preferences")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.neatness}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.neatness}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.neatness?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="range"
-								className="range range-xs max-w-xs"
-								{...methods.register("neatness")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.social_energy_level}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.social_energy_level}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.social_energy_level?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="range"
-								className="range range-xs max-w-xs"
-								{...methods.register("social_energy_level")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.alcohol}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.alcohol}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.alcohol?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="checkbox"
-								className="toggle"
-								{...methods.register("alcohol")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.drugs}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.drugs}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.drugs?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="checkbox"
-								className="toggle"
-								{...methods.register("drugs")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.parties}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.parties}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.parties?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("parties")}
-							/>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="shower_time">
+						<select
+							className="select w-full"
+							{...methods.register("shower_time")}
+						>
+							{Object.values(ShowerTime).map((showerTime) => (
+								<option key={showerTime} value={showerTime}>
+									{showerTime}
+								</option>
+							))}
+						</select>
+					</ProfileField>
+					<ProfileField methods={methods} prop="study_preferences">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("study_preferences")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="neatness">
+						<input
+							type="range"
+							className="range range-xs w-full"
+							{...methods.register("neatness")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="social_energy_level">
+						<input
+							type="range"
+							className="range range-xs w-full"
+							{...methods.register("social_energy_level")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="alcohol" transform={false}>
+						<input
+							type="checkbox"
+							className="checkbox"
+							{...methods.register("alcohol")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="drugs" transform={false}>
+						<input
+							type="checkbox"
+							className="checkbox"
+							{...methods.register("drugs")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="parties">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("parties")}
+						/>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Artistic Views</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.music}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.music}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.music?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("music")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.hobbies}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.hobbies}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.hobbies?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("hobbies")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.aesthetic}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.aesthetic}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.aesthetic?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("aesthetic")}
-							/>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="music">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("music")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="hobbies">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("hobbies")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="aesthetic">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("aesthetic")}
+						/>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Supplementary Information</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.political_spectrum}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.political_spectrum}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.political_spectrum?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("political_spectrum")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.religion}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.religion}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.religion?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("religion")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">
-									{ProfileLabels.personality_test}
-								</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.personality_test}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.personality_test?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("personality_test")}
-							/>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="political_spectrum">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("political_spectrum")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="religion">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("religion")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="personality_test">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("personality_test")}
+						/>
+					</ProfileField>
 					<div className="divider" />
 					<h4 className="text-lg font-bold">Extras</h4>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.fun_fact}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.fun_fact}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.fun_fact?.message}
-									</span>
-								</p>
-							</div>
-							<input
-								type="text"
-								className="input"
-								{...methods.register("fun_fact")}
-							/>
-						</div>
-					</div>
-					<div className="mx-2">
-						<div className="flex items-center justify-between gap-2">
-							<div>
-								<label className="font-bold">{ProfileLabels.notes}</label>
-								<p className="text-sm font-thin">
-									{ProfileDescriptions.notes}{" "}
-									<span className="text-xs text-red-700">
-										{methods.formState.errors.notes?.message}
-									</span>
-								</p>
-							</div>
-							<textarea
-								className="textarea-bordered textarea"
-								{...methods.register("notes")}
-							/>
-						</div>
-					</div>
+					<ProfileField methods={methods} prop="fun_fact">
+						<input
+							type="text"
+							className="input w-full"
+							{...methods.register("fun_fact")}
+						/>
+					</ProfileField>
+					<ProfileField methods={methods} prop="fun_fact">
+						<textarea
+							className="textarea w-full"
+							{...methods.register("notes")}
+						/>
+					</ProfileField>
 					{methods.formState.isDirty && (
 						<div className="toast-center toast z-50 w-3/4 max-w-lg">
 							<div className="alert mx-2 h-16 flex-row border-4 border-base-100 bg-opacity-50 shadow-lg backdrop-blur">
@@ -831,7 +456,14 @@ const Profile: NextPage = () => {
 										>
 											Deny
 										</button>
-										<button className="btn-primary btn-sm btn" type="submit">
+										<button
+											className="btn-primary btn-sm btn"
+											type="submit"
+											disabled={
+												!methods.formState.isValid &&
+												methods.formState.submitCount > 0
+											}
+										>
 											Accept
 										</button>
 									</div>
