@@ -433,7 +433,7 @@ const Profile: NextPage = () => {
 							{...methods.register("fun_fact")}
 						/>
 					</ProfileField>
-					<ProfileField methods={methods} prop="fun_fact">
+					<ProfileField methods={methods} prop="notes">
 						<textarea
 							className="textarea w-full"
 							{...methods.register("notes")}
