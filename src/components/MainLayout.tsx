@@ -25,7 +25,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 					<div className="flex-none lg:hidden">
 						<label
 							htmlFor="my-drawer-2"
-							className="swap btn-ghost swap-rotate btn-circle btn"
+							className="swap-rotate swap btn-ghost btn-circle btn"
 						>
 							<input type="checkbox" />
 							<FaBars className="swap-off fill-current" />
@@ -137,7 +137,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 };
 
 export const DashboardCard: FC<PropsWithChildren> = ({ children }) => (
-	<div className="flex flex-1 flex-col gap-5 rounded-lg bg-base-300 p-5">
+	<div className="flex max-w-3xl flex-1 flex-col gap-5 rounded-lg bg-base-300 p-5">
 		{children}
 	</div>
 );
