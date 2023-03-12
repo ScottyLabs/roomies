@@ -105,15 +105,24 @@ enum Bathroom {
   SEMI_PRIVATE
 }
 
+enum Media {
+  DISCORD
+  INSTAGRAM
+  FACEBOOK
+  TWITTER
+  SNAPCHAT
+}
+
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   profile       Profile?
+  connections   Connection[]
 }
 
 model Profile {
@@ -190,4 +199,14 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Connection {
+  id       String @id @default(cuid())
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String 
+  provider Media
+  handle   String
+
+  @@unique([provider, handle])
 }
