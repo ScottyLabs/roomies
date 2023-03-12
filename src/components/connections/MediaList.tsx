@@ -14,7 +14,8 @@ import {
 import { z } from "zod";
 import { useZodForm } from "../../utils";
 import { trpc } from "../../utils/trpc";
-import { ProviderName, ProviderNames } from "./ConnectionItem";
+import type { ProviderName } from "./ConnectionItem";
+import { ProviderNames } from "./ConnectionItem";
 
 const Medias: Record<
 	Media,
