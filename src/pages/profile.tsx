@@ -9,7 +9,7 @@ import {
 } from "@prisma/client";
 import clsx from "clsx";
 import type { NextPage } from "next";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -76,9 +76,10 @@ const Profile: NextPage = () => {
 
 	const router = useRouter();
 
-	const deleteAccount = trpc.account.remove.useMutation({
+	const deleteAccount = trpc.user.remove.useMutation({
 		onSuccess: async () => {
 			await router.push("/");
+			signOut();
 			toast.success("Account deleted");
 		},
 		onError: () => {
