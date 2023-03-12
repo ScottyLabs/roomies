@@ -76,7 +76,7 @@ const Profile: NextPage = () => {
 
 	const router = useRouter();
 
-	const deleteAccount = trpc.user.remove.useMutation({
+	const deleteAccount = trpc.account.remove.useMutation({
 		onSuccess: async () => {
 			await router.push("/");
 			toast.success("Account deleted");
