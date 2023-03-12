@@ -11,6 +11,7 @@ import clsx from "clsx";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { FaCircleNotch, FaInfoCircle } from "react-icons/fa";
@@ -71,6 +72,18 @@ const Profile: NextPage = () => {
 
 	const methods = useZodForm({
 		schema: ProfileUpdateSchema,
+	});
+
+	const router = useRouter();
+
+	const deleteAccount = trpc.user.remove.useMutation({
+		onSuccess: async () => {
+			await router.push("/");
+			toast.success("Account deleted");
+		},
+		onError: () => {
+			toast.error("Failed to delete account");
+		},
 	});
 
 	useEffect(() => {
@@ -472,6 +485,41 @@ const Profile: NextPage = () => {
 						</div>
 					)}
 				</form>
+				<div>
+					<label htmlFor="delete-account" className="btn-error btn float-left">
+						Delete Account
+					</label>
+
+					<input type="checkbox" id="delete-account" className="modal-toggle" />
+					<div className="modal">
+						<div className="modal-box">
+							<h3 className="text-lg font-bold">Delete your account</h3>
+							<p className="py-4">
+								When you delete your account, all of your data will be
+								permanently deleted. This action cannot be undone.
+							</p>
+							<p>Are you sure you want to delete your account?</p>
+							<div className="modal-action">
+								<label
+									htmlFor="delete-account"
+									onClick={() => {
+										console.log("test");
+									}}
+									className="btn-ghost btn"
+								>
+									No
+								</label>
+								<label
+									htmlFor="delete-account"
+									onClick={() => deleteAccount.mutate({ id: session.user.id })}
+									className="btn-error btn"
+								>
+									Yes, Delete My Account
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
 			</DashboardCard>
 		</MainLayout>
 	);
