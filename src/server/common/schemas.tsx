@@ -1,6 +1,7 @@
 import {
 	Bathroom,
 	Dorm,
+	Media,
 	School,
 	Sex,
 	ShowerTime,
@@ -8,6 +9,11 @@ import {
 	Volume,
 } from "@prisma/client";
 import { z } from "zod";
+
+export const ConnectionCreateSchema = z.object({
+	provider: z.nativeEnum(Media),
+	handle: z.string(),
+});
 
 export const ProfileCreateSchema = z.object({
 	year: z.coerce

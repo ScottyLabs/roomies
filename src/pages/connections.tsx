@@ -1,17 +1,8 @@
 import type { NextPage } from "next";
-import type { BuiltInProviderType } from "next-auth/providers";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { FaDiscord } from "react-icons/fa";
 import { ConnectionList } from "../components/connections/ConnectionList";
+import { MediaList } from "../components/connections/MediaList";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
-
-const connections: Record<
-	string,
-	{ icon: React.ReactNode; provider: BuiltInProviderType }
-> = {
-	Discord: { icon: <FaDiscord className="h-10 w-10" />, provider: "discord" },
-};
 
 const Connections: NextPage = () => {
 	return (
@@ -30,18 +21,7 @@ const Connections: NextPage = () => {
 							.
 						</span>
 					</div>
-					<div className="flex flex-wrap gap-2">
-						{Object.entries(connections).map(([connection, data]) => (
-							<button
-								key={connection}
-								className="tooltip rounded-lg bg-slate-700 p-2"
-								data-tip={connection}
-								onClick={() => signIn(data.provider)}
-							>
-								{data.icon}
-							</button>
-						))}
-					</div>
+					<MediaList />
 				</DashboardCard>
 			</div>
 			<ConnectionList />

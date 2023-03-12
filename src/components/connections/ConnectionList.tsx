@@ -1,20 +1,18 @@
 import { FaCircleNotch } from "react-icons/fa";
 import { trpc } from "../../utils/trpc";
-import { Connection } from "./Connection";
+import { ConnectionItem } from "./ConnectionItem";
 
 export const ConnectionList: React.FC = () => {
-	const { data: accounts, isLoading, isError } = trpc.account.getAll.useQuery();
+	const { data: connections, status } = trpc.connections.getAll.useQuery();
 
-	if (isLoading) return <FaCircleNotch className="animate-spin" />;
-	if (isError) return <div>Something went wrong</div>;
+	if (status === "loading") return <FaCircleNotch className="animate-spin" />;
+	if (status === "error") return <div>Error</div>;
 
 	return (
-		<>
-			{accounts
-				.filter((account) => account.provider !== "google")
-				.map((account) => (
-					<Connection key={account.id} account={account} />
-				))}
-		</>
+		<div className="flex flex-col gap-2">
+			{connections.map((connection) => (
+				<ConnectionItem key={connection.id} connection={connection} />
+			))}
+		</div>
 	);
 };
