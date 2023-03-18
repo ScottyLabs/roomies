@@ -5,26 +5,26 @@ import { useEffect, useState } from "react";
 import { prisma } from "../../server/db/client";
 
 import BaseLayout from "../../components/BaseLayout";
-import { DesktopProgress } from "../../components/SetupForm/DesktopProgress";
-import { MobileProgress } from "../../components/SetupForm/MobileProgress";
+import { DesktopProgress } from "../../components/setup/DesktopProgress";
+import { MobileProgress } from "../../components/setup/MobileProgress";
 import { SetupSteps } from "../../types/constants";
 
 import { unstable_getServerSession } from "next-auth";
-import { Setup1 } from "../../components/SetupForm/Setup1";
-import { Setup10 } from "../../components/SetupForm/Setup10";
-import { Setup11 } from "../../components/SetupForm/Setup11";
-import { Setup12 } from "../../components/SetupForm/Setup12";
-import { Setup13 } from "../../components/SetupForm/Setup13";
-import { Setup14 } from "../../components/SetupForm/Setup14";
-import { Setup15 } from "../../components/SetupForm/Setup15";
-import { Setup2 } from "../../components/SetupForm/Setup2";
-import { Setup3 } from "../../components/SetupForm/Setup3";
-import { Setup4 } from "../../components/SetupForm/Setup4";
-import { Setup5 } from "../../components/SetupForm/Setup5";
-import { Setup6 } from "../../components/SetupForm/Setup6";
-import { Setup7 } from "../../components/SetupForm/Setup7";
-import { Setup8 } from "../../components/SetupForm/Setup8";
-import { Setup9 } from "../../components/SetupForm/Setup9";
+import { Setup1 } from "../../components/setup/Setup1";
+import { Setup10 } from "../../components/setup/Setup10";
+import { Setup11 } from "../../components/setup/Setup11";
+import { Setup12 } from "../../components/setup/Setup12";
+import { Setup13 } from "../../components/setup/Setup13";
+import { Setup14 } from "../../components/setup/Setup14";
+import { Setup15 } from "../../components/setup/Setup15";
+import { Setup2 } from "../../components/setup/Setup2";
+import { Setup3 } from "../../components/setup/Setup3";
+import { Setup4 } from "../../components/setup/Setup4";
+import { Setup5 } from "../../components/setup/Setup5";
+import { Setup6 } from "../../components/setup/Setup6";
+import { Setup7 } from "../../components/setup/Setup7";
+import { Setup8 } from "../../components/setup/Setup8";
+import { Setup9 } from "../../components/setup/Setup9";
 import { authOptions } from "../api/auth/[...nextauth]";
 
 const StepForms = [
