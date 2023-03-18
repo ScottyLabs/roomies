@@ -11,6 +11,7 @@ import {
 	FaSearchLocation,
 	FaUser,
 	FaUserFriends,
+	FaSignOutAlt,
 } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
@@ -25,7 +26,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 					<div className="flex-none lg:hidden">
 						<label
 							htmlFor="my-drawer-2"
-							className="swap btn-ghost swap-rotate btn-circle btn"
+							className="swap-rotate swap btn-ghost btn-circle btn"
 						>
 							<input type="checkbox" />
 							<FaBars className="swap-off fill-current" />
@@ -61,11 +62,12 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 							)}
 							<ul
 								tabIndex={0}
-								className="dropdown-content menu rounded-box mt-3 w-32 bg-base-200 p-2 shadow"
+								className="dropdown-content menu rounded-box mt-3 w-36 bg-base-200 p-2 shadow"
 							>
 								<li>
 									<button onClick={() => signOut({ callbackUrl: "/" })}>
-										Sign Out
+										<FaSignOutAlt />
+										<span className="font-bold">Sign Out</span>
 									</button>
 								</li>
 							</ul>
