@@ -2,6 +2,7 @@ import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 import { CustomToaster } from "../components/Toast";
+import TransitionProvider from "../providers/TransitionProvider";
 import "../styles/globals.css";
 import { trpc } from "../utils/trpc";
 
@@ -13,7 +14,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 		<>
 			<CustomToaster />
 			<SessionProvider session={session}>
-				<Component {...pageProps} />
+				<TransitionProvider>
+					<Component {...pageProps} />
+				</TransitionProvider>
 			</SessionProvider>
 		</>
 	);
