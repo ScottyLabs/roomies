@@ -9,9 +9,9 @@ import {
 	FaGithub,
 	FaMapMarked,
 	FaSearchLocation,
+	FaSignOutAlt,
 	FaUser,
 	FaUserFriends,
-	FaSignOutAlt,
 } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 

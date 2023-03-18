@@ -1,15 +1,10 @@
 import { Transition } from "@headlessui/react";
 import type { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth";
 import { useEffect, useState } from "react";
-
-import { prisma } from "../../server/db/client";
-
 import BaseLayout from "../../components/BaseLayout";
 import { DesktopProgress } from "../../components/setup/DesktopProgress";
 import { MobileProgress } from "../../components/setup/MobileProgress";
-import { SetupSteps } from "../../types/constants";
-
-import { unstable_getServerSession } from "next-auth";
 import { Setup1 } from "../../components/setup/Setup1";
 import { Setup10 } from "../../components/setup/Setup10";
 import { Setup11 } from "../../components/setup/Setup11";
@@ -25,6 +20,8 @@ import { Setup6 } from "../../components/setup/Setup6";
 import { Setup7 } from "../../components/setup/Setup7";
 import { Setup8 } from "../../components/setup/Setup8";
 import { Setup9 } from "../../components/setup/Setup9";
+import { prisma } from "../../server/db/client";
+import { SetupSteps } from "../../types/constants";
 import { authOptions } from "../api/auth/[...nextauth]";
 
 const StepForms = [
@@ -77,7 +74,7 @@ const Setup: NextPage<SetupProps> = ({ step }) => {
 					enterFrom="opacity-0 translate-x-48 scale-50"
 					enterTo="opacity-100 translate-x-0 scale-100"
 					leave="transform duration-200 transition ease-in-out"
-					leaveFrom="opacity-100 translate-x-0 scale-100 "
+					leaveFrom="opacity-100 translate-x-0 scale-100"
 					leaveTo="-translate-x-48 scale-50 opacity-0"
 				>
 					<div className="m-4">{StepForms[formStep - 1]}</div>
