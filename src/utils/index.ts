@@ -4,6 +4,7 @@ import type { UseFormProps } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import create from "zustand";
+import { devtools, persist } from "zustand/middleware";
 
 export function useZodForm<TSchema extends z.ZodType>(
 	props: Omit<UseFormProps<TSchema["_input"]>, "resolver"> & {
@@ -23,8 +24,17 @@ type ProfileCreationState = {
 	update: (newProfile: Partial<Profile>) => void;
 };
 
-export const useProfileStore = create<ProfileCreationState>((set) => ({
-	profile: {},
-	update: (newProfile) =>
-		set((state) => ({ profile: { ...state.profile, ...newProfile } })),
-}));
+export const useProfileStore = create<ProfileCreationState>()(
+	devtools(
+		persist(
+			(set) => ({
+				profile: {},
+				update: (newProfile) =>
+					set((state) => ({ profile: { ...state.profile, ...newProfile } })),
+			}),
+			{
+				name: "roomies_profile",
+			}
+		)
+	)
+);
