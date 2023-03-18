@@ -1,27 +1,23 @@
 import { Transition } from "@headlessui/react";
-import { Router } from "next/router";
+import { useRouter } from "next/router";
 import type { PropsWithChildren } from "react";
 import { useEffect, useState } from "react";
 import { FaCircleNotch } from "react-icons/fa";
 
 export default function TransitionProvider({ children }: PropsWithChildren) {
 	const [loading, setLoading] = useState(false);
+	const router = useRouter();
+
 	useEffect(() => {
-		const start = () => {
-			console.log("start");
-			setLoading(true);
-		};
-		const end = () => {
-			console.log("finished");
-			setLoading(false);
-		};
-		Router.events.on("routeChangeStart", start);
-		Router.events.on("routeChangeComplete", end);
-		Router.events.on("routeChangeError", end);
+		const start = () => setLoading(true);
+		const end = () => setLoading(false);
+		router.events.on("routeChangeStart", start);
+		router.events.on("routeChangeComplete", end);
+		router.events.on("routeChangeError", end);
 		return () => {
-			Router.events.off("routeChangeStart", start);
-			Router.events.off("routeChangeComplete", end);
-			Router.events.off("routeChangeError", end);
+			router.events.off("routeChangeStart", start);
+			router.events.off("routeChangeComplete", end);
+			router.events.off("routeChangeError", end);
 		};
 	}, []);
 
@@ -38,7 +34,7 @@ export default function TransitionProvider({ children }: PropsWithChildren) {
 				leaveTo="opacity-0"
 				className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-base-100 bg-opacity-50 backdrop-blur"
 			>
-				<span className="fixed z-50 animate-pulse text-xl font-bold">
+				<span className="animate-pulse text-xl font-bold">
 					<FaCircleNotch className="h-10 w-10 animate-spin" />
 				</span>
 			</Transition>
