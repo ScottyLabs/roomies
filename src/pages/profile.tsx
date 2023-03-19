@@ -501,13 +501,7 @@ const Profile: NextPage = () => {
 							</p>
 							<p>Are you sure you want to delete your account?</p>
 							<div className="modal-action">
-								<label
-									htmlFor="delete-account"
-									onClick={() => {
-										console.log("test");
-									}}
-									className="btn-ghost btn"
-								>
+								<label htmlFor="delete-account" className="btn-ghost btn">
 									No
 								</label>
 								<label
