@@ -1,16 +1,17 @@
 import { Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import type { PropsWithChildren } from "react";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { FaCircleNotch } from "react-icons/fa";
 
-export default function TransitionProvider({ children }: PropsWithChildren) {
+function TransitionProvider({ children }: PropsWithChildren) {
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 
+	const start = () => setLoading(true);
+	const end = () => setLoading(false);
+
 	useEffect(() => {
-		const start = () => setLoading(true);
-		const end = () => setLoading(false);
 		router.events.on("routeChangeStart", start);
 		router.events.on("routeChangeComplete", end);
 		router.events.on("routeChangeError", end);
@@ -19,17 +20,16 @@ export default function TransitionProvider({ children }: PropsWithChildren) {
 			router.events.off("routeChangeComplete", end);
 			router.events.off("routeChangeError", end);
 		};
-	}, [router.events, loading]);
+	}, []);
 
 	return (
 		<>
 			<Transition
-				appear
 				show={loading}
-				enter="transition-all"
+				enter="transition-all duration-300"
 				enterFrom="opacity-0"
 				enterTo="opacity-100"
-				leave="transition-all"
+				leave="transition-all duration-300"
 				leaveFrom="opacity-100"
 				leaveTo="opacity-0"
 				className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-base-100 bg-opacity-50 backdrop-blur"
@@ -42,3 +42,5 @@ export default function TransitionProvider({ children }: PropsWithChildren) {
 		</>
 	);
 }
+
+export default memo(TransitionProvider);
