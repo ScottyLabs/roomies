@@ -1,106 +1,78 @@
+import type { User } from "@prisma/client";
+import { Profile } from "@prisma/client";
 import type { NextPage } from "next";
 import Image from "next/image";
-import MainLayout, { DashboardCard } from "../components/MainLayout";
-import { StatusLabels } from "../types/constants";
+import Link from "next/link";
+import { useState } from "react";
+import MainLayout from "../components/MainLayout";
 import { trpc } from "../utils/trpc";
+
+type ProfileProps = {
+	profile: Profile & {
+		user: User;
+	};
+};
+
+const Profile = ({ profile }: ProfileProps) => {
+	return (
+		<article className="relative w-full max-w-sm overflow-hidden rounded-lg bg-base-300 shadow-2xl hover:bg-base-100">
+			<Link className="absolute inset-0" href={`/profiles/${profile.id}`} />
+			<div className="flex aspect-[19/9] w-full">
+				<Image
+					className="object-cover"
+					src={profile.user.image ?? ""}
+					alt={profile.userId}
+					height={384}
+					width={384}
+				/>
+			</div>
+			<div>
+				<div className="flex h-1 items-center gap-2 overflow-visible bg-accent px-4">
+					<div className="badge-accent badge badge-lg">
+						<span className="font-bold">{profile.schools[0]}</span>
+					</div>
+					<div className="badge-accent badge badge-lg">
+						<span className="font-bold">{profile.assigned_sex}</span>
+					</div>
+				</div>
+				<div className="flex flex-col p-4">
+					<span className="text-xl font-bold">
+						{profile.user.name}{" "}
+						{profile.pronouns && <span>{profile.pronouns}</span>}
+					</span>
+					<span className="text-sm font-thin">{profile.user.email}</span>
+				</div>
+			</div>
+		</article>
+	);
+};
 
 const Explore: NextPage = () => {
 	const { data: profiles } = trpc.profile.getAll.useQuery();
+	const [query, setQuery] = useState("");
+
+	const filteredProfiles = profiles?.filter(
+		(profile) =>
+			profile.user.name?.toLowerCase().includes(query.toLowerCase()) ||
+			profile.user.email?.toLowerCase().includes(query.toLowerCase()) ||
+			profile.schools.some((school) =>
+				school.toLowerCase().includes(query.toLowerCase())
+			)
+	);
 
 	return (
 		<MainLayout>
 			<div className="w-full text-3xl font-bold">Explore</div>
-			<DashboardCard>
-				<table className="table w-full min-w-[1024px] table-fixed">
-					<thead>
-						<tr>
-							<th className="w-72">General Information</th>
-							<th>Identity</th>
-							<th>Personal Information</th>
-							<th>Schools</th>
-							<th className="w-32" />
-						</tr>
-					</thead>
-					<tbody>
-						{profiles?.map((profile) => (
-							<tr key={profile.id}>
-								<td>
-									<div className="flex items-center space-x-3">
-										<div className="indicator">
-											<span className="indicator-item flex flex-col gap-1">
-												{profile.committed && (
-													<span className="badge-secondary badge badge-xs font-bold uppercase tracking-tighter">
-														Committed
-													</span>
-												)}
-												<span className="badge-accent badge badge-xs font-bold uppercase tracking-tighter">
-													{StatusLabels[profile.status]}
-												</span>
-											</span>
-											<div className="avatar">
-												<div className="mask mask-squircle h-20 w-20">
-													<Image
-														src={profile.user.image ?? ""}
-														alt="profile"
-														width={64}
-														height={64}
-													/>
-												</div>
-											</div>
-										</div>
-										<div>
-											<div className="font-bold">
-												{profile.user.name}, {profile.year}
-											</div>
-											<div className="text-sm opacity-50">
-												{profile.user.email}
-											</div>
-										</div>
-									</div>
-								</td>
-								<td className="whitespace-normal break-words font-thin">
-									<div>
-										<span>Assigned Sex:</span>{" "}
-										<span className="font-bold">{profile.assigned_sex}</span>
-									</div>
-									<div>
-										<span>Sexual Orientation:</span>{" "}
-										<span className="font-bold">
-											{profile.sexual_orientation}
-										</span>
-									</div>
-									<div>
-										<span>Pronouns:</span>{" "}
-										<span className="font-bold">{profile.pronouns}</span>
-									</div>
-								</td>
-								<td className="whitespace-normal break-words font-thin">
-									<div>
-										<span>Location:</span>{" "}
-										<span className="font-bold">{profile.location}</span>
-									</div>
-									<div>
-										<span>Health Concerns:</span>{" "}
-										<span className="font-bold">
-											{profile.health_concerns || "N/A"}
-										</span>
-									</div>
-								</td>
-								<td>
-									<div className="whitespace-normal break-words font-mono">
-										{profile.schools.join(", ")}
-									</div>
-								</td>
-								<th>
-									<button disabled className="btn-ghost disabled btn-xs btn">
-										details
-									</button>
-								</th>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</DashboardCard>
+			<input
+				type="text"
+				className="input-bordered input w-full"
+				value={query}
+				onChange={(e) => setQuery(e.target.value)}
+				placeholder="Search"
+			/>
+			{filteredProfiles?.map((profile) => (
+				<Profile key={profile.id} profile={profile} />
+			))}
 		</MainLayout>
 	);
 };
