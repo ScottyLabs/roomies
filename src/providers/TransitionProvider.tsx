@@ -26,6 +26,7 @@ function TransitionProvider({ children }: PropsWithChildren) {
 		<>
 			<Transition
 				appear
+				key={router.pathname}
 				show={loading}
 				enter="transition-all duration-300"
 				enterFrom="opacity-0"
