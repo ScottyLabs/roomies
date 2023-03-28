@@ -7,6 +7,7 @@ import {
 	FaCircleNotch,
 	FaDiscourse,
 	FaGithub,
+	FaHouseUser,
 	FaMapMarked,
 	FaSearchLocation,
 	FaSignOutAlt,
@@ -113,6 +114,12 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 							<Link href="/explore">
 								<FaMapMarked />
 								<span>Explore</span>
+							</Link>
+						</li>
+						<li>
+							<Link href="/group">
+								<FaHouseUser />
+								<span>Group</span>
 							</Link>
 						</li>
 						<li />

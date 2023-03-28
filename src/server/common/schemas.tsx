@@ -1,7 +1,9 @@
 import {
 	Bathroom,
 	Dorm,
+	InvitationStatus,
 	Media,
+	Role,
 	School,
 	Sex,
 	ShowerTime,
@@ -117,3 +119,27 @@ export const ProfileUpdateSchema = z.object({
 	fun_fact: z.string().optional(),
 	notes: z.string().optional(),
 });
+
+export const InvitationCreateSchema = z.object({
+	receiverId: z.string(),
+	groupId: z.string(),
+	message: z.string().max(100),
+	status: z.nativeEnum(InvitationStatus),
+});
+
+export const InvitationUpdateSchema = z.object({
+	id: z.string(),
+	status: z.nativeEnum(InvitationStatus),
+});
+
+export const MembershipCreateSchema = z.object({
+	groupId: z.string(),
+	role: z.nativeEnum(Role),
+});
+
+export const MembershipUpdateSchema = z.object({
+	id: z.string(),
+	role: z.string(),
+});
+
+export const GroupCreateSchema = z.object({});

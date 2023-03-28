@@ -114,15 +114,18 @@ enum Media {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  name          String?
-  email         String?      @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  profile       Profile?
-  connections   Connection[]
+  id                  String       @id @default(cuid())
+  name                String?
+  email               String?      @unique
+  emailVerified       DateTime?
+  image               String?
+  accounts            Account[]
+  sessions            Session[]
+  profile             Profile?
+  membership          Membership?
+  connections         Connection[]
+  outgoingInvitations Invitation[] @relation("outgoingInvitations")
+  incomingInvitations Invitation[] @relation("incomingInvitations")
 }
 
 model Profile {
@@ -204,9 +207,48 @@ model VerificationToken {
 model Connection {
   id       String @id @default(cuid())
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   String 
+  userId   String
   provider Media
   handle   String
 
   @@unique([provider, handle])
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model Invitation {
+  id         String           @id @default(cuid())
+  sender     User             @relation("outgoingInvitations", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId   String
+  receiver   User             @relation("incomingInvitations", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId String
+  message    String
+  status     InvitationStatus
+  group      Group            @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId    String
+}
+
+model Group {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  members     Membership[] @relation
+  invitations Invitation[]
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+model Membership {
+  id      String @id @default(cuid())
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String @unique
+  role    Role
 }
