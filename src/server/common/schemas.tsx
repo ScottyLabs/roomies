@@ -139,7 +139,7 @@ export const MembershipCreateSchema = z.object({
 
 export const MembershipUpdateSchema = z.object({
 	id: z.string(),
-	role: z.string(),
+	role: z.nativeEnum(Role),
 });
 
 export const GroupCreateSchema = z.object({});
