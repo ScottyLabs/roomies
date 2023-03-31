@@ -6,11 +6,13 @@ import {
 	FaBars,
 	FaCircleNotch,
 	FaDiscourse,
+	FaEnvelope,
 	FaGithub,
 	FaHouseUser,
 	FaMapMarked,
 	FaSearchLocation,
 	FaSignOutAlt,
+	FaSpeakap,
 	FaUser,
 	FaUserFriends,
 } from "react-icons/fa";
@@ -27,7 +29,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 					<div className="flex-none lg:hidden">
 						<label
 							htmlFor="my-drawer-2"
-							className="swap btn-ghost swap-rotate btn-circle btn"
+							className="swap-rotate swap btn-ghost btn-circle btn"
 						>
 							<input type="checkbox" />
 							<FaBars className="swap-off fill-current" />
@@ -95,9 +97,9 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 						</Link>
 						<span className="link-hover link font-mono text-xs">0.0.1</span>
 					</div>
-					<ul className="menu  p-4 text-base-content">
+					<ul className="menu p-4 text-base-content">
 						<li className="menu-title">
-							<span>Category</span>
+							<span>Setup</span>
 						</li>
 						<li>
 							<Link href="/profile">
@@ -116,10 +118,26 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 								<span>Explore</span>
 							</Link>
 						</li>
+						<li />
+						<li className="menu-title">
+							<span>Group</span>
+						</li>
 						<li>
-							<Link href="/group">
+							<Link href="/invitations">
+								<FaEnvelope />
+								<span>Invitations</span>
+							</Link>
+						</li>
+						<li>
+							<Link href="/manage">
 								<FaHouseUser />
-								<span>Group</span>
+								<span>Manage</span>
+							</Link>
+						</li>
+						<li>
+							<Link href="/chat">
+								<FaSpeakap />
+								<span>Chat</span>
 							</Link>
 						</li>
 						<li />
