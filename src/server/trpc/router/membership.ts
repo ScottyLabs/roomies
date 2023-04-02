@@ -11,7 +11,19 @@ export const membershipRouter = router({
 			where: { userId: ctx.session.user.id },
 			include: {
 				group: {
-					include: { invitations: true, members: true },
+					include: {
+						invitations: {
+							include: {
+								receiver: true,
+								sender: true,
+							},
+						},
+						members: {
+							include: {
+								user: true,
+							},
+						},
+					},
 				},
 			},
 		})
