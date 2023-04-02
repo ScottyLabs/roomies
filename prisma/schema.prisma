@@ -251,14 +251,4 @@ model Membership {
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String    @unique
   role     Role
-  messages Message[]
-}
-
-model Message {
-  id        String     @id @default(cuid())
-  member    Membership @relation(fields: [memberId], references: [id], onDelete: Cascade)
-  memberId  String
-  text      String
-  createdAt DateTime   @unique @default(now())
-  updatedAt DateTime   @unique @updatedAt
 }

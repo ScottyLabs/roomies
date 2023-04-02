@@ -5,7 +5,6 @@ import { connectionsRouter } from "./connections";
 import { groupRouter } from "./group";
 import { invitationRouter } from "./invitations";
 import { membershipRouter } from "./membership";
-import { messageRouter } from "./message";
 import { profileRouter } from "./profile";
 import { userRouter } from "./user";
 
@@ -18,7 +17,6 @@ export const appRouter = router({
 	invitations: invitationRouter,
 	groups: groupRouter,
 	membership: membershipRouter,
-	messages: messageRouter,
 });
 
 // export type definition of API
