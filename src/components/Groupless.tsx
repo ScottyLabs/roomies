@@ -54,12 +54,14 @@ export default function Groupless() {
 
 	return (
 		<MainLayout>
-			<div className="w-full text-3xl font-bold">Find or Create a Group</div>
+			<div className="w-full text-3xl font-bold">Accept An Invitation</div>
 			<DashboardCard>
 				<div>
 					<h3 className="font-bold">Invitations</h3>
 					<span className="text-sm font-thin">
-						These are invitations sent to you by other users.
+						You have{" "}
+						<span className="font-mono">{incomingInvitations.length}</span>{" "}
+						pending invitations.
 					</span>
 					{incomingInvitations.map((invitation) => (
 						<div
@@ -110,15 +112,16 @@ export default function Groupless() {
 					))}
 				</div>
 			</DashboardCard>
-			<div className="w-full">
+			<div className="divider w-full">OR</div>
+			<DashboardCard>
 				<button
 					type="button"
 					onClick={() => createGroup.mutate()}
-					className="btn-primary btn-sm btn"
+					className="btn-primary btn w-full"
 				>
 					Create a new group
 				</button>
-			</div>
+			</DashboardCard>
 		</MainLayout>
 	);
 }

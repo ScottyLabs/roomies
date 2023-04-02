@@ -1,4 +1,5 @@
 import { InvitationStatus } from "@prisma/client";
+import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { InvitationCreateSchema } from "../server/common/schemas";
 import { useZodForm } from "../utils";
@@ -65,8 +66,17 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 	)
 		return <div>Error</div>;
 
-	if (!membership) return <div>Group not found</div>;
-	if (theirMembership) return <div>Already in group</div>;
+	if (!membership)
+		return (
+			<div>
+				Join or{" "}
+				<Link className="link" href="/manage">
+					create
+				</Link>{" "}
+				a group to invite others.
+			</div>
+		);
+	if (theirMembership) return <div>User is already in group.</div>;
 
 	return (
 		<DashboardCard>
