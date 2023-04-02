@@ -70,7 +70,6 @@ enum Dorm {
   SCOBELL
   STEVER
   WELCH
-  WEST_WING
   CLYDE
   RES_ON_FIFTH
 }
