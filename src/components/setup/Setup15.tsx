@@ -57,7 +57,7 @@ export const Setup15: React.FC = () => {
 						<button
 							type="submit"
 							disabled={createProfile.isLoading}
-							className="btn-outline btn-primary btn w-40"
+							className="btn-primary btn-outline btn w-40"
 						>
 							{createProfile.isLoading ? (
 								<>
