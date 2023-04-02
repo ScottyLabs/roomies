@@ -19,42 +19,34 @@ const UserPage = () => {
 
 	return (
 		<MainLayout>
-			<div className="w-full text-3xl font-bold">{user.name}</div>
-			<div className="flex w-full flex-col gap-2">
-				<DashboardCard>
-					<div className="flex items-center justify-between">
-						<div className="flex flex-row items-center gap-4">
-							<div className="avatar">
-								<div className="mask mask-squircle w-24">
-									<Image
-										src={user.image ?? ""}
-										alt=""
-										width={128}
-										height={128}
-									/>
-								</div>
-							</div>
-							<div>
-								<div className="text-2xl font-bold">{user.name}</div>
-								<div className="leading-4 opacity-50">{user.email}</div>
+			<DashboardCard>
+				<div className="flex items-center justify-between">
+					<div className="flex flex-row items-center gap-4">
+						<div className="avatar">
+							<div className="mask mask-squircle w-24">
+								<Image src={user.image ?? ""} alt="" width={128} height={128} />
 							</div>
 						</div>
 						<div>
-							{user.profile ? (
-								<Link
-									href={`/profiles/${user.profile.id}`}
-									className="btn-primary btn-sm btn"
-								>
-									View Profile
-								</Link>
-							) : (
-								<span>
-									<span className="text-red-500">No profile found</span>
-								</span>
-							)}
+							<div className="text-2xl font-bold">{user.name}</div>
+							<div className="leading-4 opacity-50">{user.email}</div>
 						</div>
 					</div>
-				</DashboardCard>
+				</div>
+			</DashboardCard>
+			<div className="w-full">
+				{user.profile ? (
+					<Link
+						href={`/profiles/${user.profile.id}`}
+						className="btn-primary btn w-full max-w-lg"
+					>
+						View Profile
+					</Link>
+				) : (
+					<span>
+						<span className="text-red-500">No profile found</span>
+					</span>
+				)}
 			</div>
 		</MainLayout>
 	);

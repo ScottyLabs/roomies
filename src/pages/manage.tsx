@@ -122,7 +122,7 @@ const ActionCard = ({ membership }: ActionCardProps) => {
 										membership.group.members.length > 1
 									}
 								>
-									Delete Group
+									Delete
 								</button>
 							)}
 							<button
@@ -131,7 +131,7 @@ const ActionCard = ({ membership }: ActionCardProps) => {
 								className="btn-error btn-sm btn"
 								disabled={membership.role === Role.ADMIN}
 							>
-								Leave Group
+								Leave
 							</button>
 						</div>
 					</div>

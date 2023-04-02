@@ -1,139 +1,12 @@
-import { InvitationStatus } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { toast } from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { FaGraduationCap, FaSignature } from "react-icons/fa";
+import InvitationCard from "../../components/InvitationCard";
 import MainLayout, { DashboardCard } from "../../components/MainLayout";
-import { InvitationCreateSchema } from "../../server/common/schemas";
-import { useZodForm } from "../../utils";
-import type { RouterOutputs } from "../../utils/trpc";
+import type { Incompatibility } from "../../utils/compatibility";
+import compatibility from "../../utils/compatibility";
 import { trpc } from "../../utils/trpc";
-
-type InvitationCardProps = {
-	profile: NonNullable<RouterOutputs["profile"]["byId"]>;
-};
-
-const InvitationCard = ({ profile }: InvitationCardProps) => {
-	const methods = useZodForm({
-		schema: InvitationCreateSchema.omit({
-			status: true,
-			groupId: true,
-			receiverId: true,
-		}),
-	});
-
-	const { data: theirMembership, status: theirMembershipStatus } =
-		trpc.membership.byUserId.useQuery({
-			userId: profile.userId,
-		});
-
-	const { data: membership, status: membershipStatus } =
-		trpc.membership.getCurrent.useQuery();
-
-	const { data: outgoingInvitations, status: invitationStatus } =
-		trpc.invitations.getOutgoing.useQuery();
-
-	const context = trpc.useContext();
-
-	const createInvitation = trpc.invitations.create.useMutation({
-		onSuccess: async () => {
-			await context.invitations.invalidate();
-			toast.success("Invitation sent");
-		},
-		onError: () => {
-			toast.error("Failed to send invitation");
-		},
-	});
-
-	const cancelInvitation = trpc.invitations.delete.useMutation({
-		onSuccess: async () => {
-			await context.invitations.invalidate();
-			toast.success("Invitation canceled");
-		},
-		onError: () => {
-			toast.error("Failed to cancel invitation");
-		},
-	});
-
-	if (
-		invitationStatus === "loading" ||
-		membershipStatus === "loading" ||
-		theirMembershipStatus === "loading"
-	)
-		return <div>Loading...</div>;
-	if (
-		invitationStatus === "error" ||
-		membershipStatus === "error" ||
-		theirMembershipStatus === "error"
-	)
-		return <div>Error</div>;
-
-	if (!membership) return <div>Group not found</div>;
-	if (theirMembership) return <div>Already in group</div>;
-
-	return (
-		<DashboardCard>
-			{outgoingInvitations.some(
-				(invitation) =>
-					invitation.receiverId === profile.userId &&
-					invitation.status === InvitationStatus.PENDING
-			) ? (
-				<div className="flex items-center justify-between gap-4">
-					<span className="text-sm font-bold opacity-50">
-						You have already sent an invitation to {profile.user.name}.
-					</span>
-					<button
-						type="button"
-						onClick={() =>
-							cancelInvitation.mutate({
-								id: outgoingInvitations.find(
-									(invitation) => invitation.receiverId === profile.userId
-								)!.id,
-							})
-						}
-						className="btn-error btn-sm btn"
-					>
-						Cancel Invitation
-					</button>
-				</div>
-			) : (
-				<>
-					<div className="text-xl font-bold">Invite to your group</div>
-					<form
-						onSubmit={methods.handleSubmit((data) => {
-							createInvitation.mutate({
-								...data,
-								status: InvitationStatus.PENDING,
-								receiverId: profile.userId,
-								groupId: membership.groupId,
-							});
-						})}
-					>
-						<div>
-							<label className="label">
-								<span className="label-text">
-									Send an optional message to {profile.user.name}
-								</span>
-							</label>
-							<textarea
-								className="textarea-bordered textarea h-24 w-full"
-								placeholder="Hi, would you like to join my group?"
-								{...methods.register("message")}
-							/>
-							<span className="text-xs text-error">
-								{methods.formState.errors.message?.message}
-							</span>
-						</div>
-						<div className="form-control">
-							<button type="submit" className="btn-primary btn mt-2">
-								Send
-							</button>
-						</div>
-					</form>
-				</>
-			)}
-		</DashboardCard>
-	);
-};
 
 const ProfilePage = () => {
 	const router = useRouter();
@@ -144,18 +17,34 @@ const ProfilePage = () => {
 		{ enabled: typeof id === "string" }
 	);
 
-	if (profileStatus === "loading") return <div>Loading...</div>;
-	if (profileStatus === "error") return <div>Error</div>;
-	if (!profile) return <div>Profile not found</div>;
+	const { data: currentProfile, status: currentProfileStatus } =
+		trpc.profile.getCurrent.useQuery();
+
+	const [incompatibilities, setIncompatibilities] = useState<Incompatibility[]>(
+		[]
+	);
+
+	useEffect(() => {
+		if (profile && currentProfile) {
+			setIncompatibilities(compatibility(profile, currentProfile));
+		}
+	}, [profile, currentProfile]);
+
+	if (profileStatus === "loading" || currentProfileStatus === "loading")
+		return <div>Loading...</div>;
+	if (profileStatus === "error" || currentProfileStatus === "error")
+		return <div>Error</div>;
+	if (!profile || !currentProfile) return <div>Profile not found</div>;
+
+	console.log(incompatibilities);
 
 	return (
 		<MainLayout>
-			<div className="w-full text-3xl font-bold">{profile.user.name}</div>
 			<div className="flex w-full flex-col gap-2">
 				<DashboardCard>
-					<div className="flex flex-row items-center gap-4">
+					<div className="flex flex-col items-center justify-center gap-4">
 						<div className="avatar">
-							<div className="mask mask-squircle w-24">
+							<div className="mask mask-circle w-36">
 								<Image
 									src={profile.user.image ?? ""}
 									alt=""
@@ -164,33 +53,73 @@ const ProfilePage = () => {
 								/>
 							</div>
 						</div>
-						<div>
+						<div className="text-center">
 							<div className="text-2xl font-bold">
 								{profile.user.name}{" "}
 								<span>{profile.pronouns && `(${profile.pronouns})`}</span>
 							</div>
-							<div className="leading-4 opacity-50">{profile.user.email}</div>
-							<div className="text-sm font-bold text-red-400">
-								Carnegie Mellon University @ {profile.year}
+							<div className="opacity-50">{profile.user.email}</div>
+						</div>
+					</div>
+					<div className="stats stats-vertical shadow">
+						<div className="stat">
+							<div className="stat-figure text-primary">
+								<FaGraduationCap className="h-10 w-10" />
+							</div>
+							<div className="stat-title">Graduation Year</div>
+							<div className="stat-value text-primary">{profile.year}</div>
+							<div className="stat-desc">21% more than last month</div>
+						</div>
+
+						<div className="stat">
+							<div className="stat-figure text-secondary">
+								<FaSignature className="h-10 w-10" />
+							</div>
+							<div className="stat-title">Committed</div>
+							<div className="stat-value text-secondary">
+								{profile.committed.toString()}
+							</div>
+							<div className="stat-desc">21% more than last month</div>
+						</div>
+
+						<div className="stat">
+							<div className="stat-figure text-secondary">
+								<div className="online avatar">
+									<div className="w-16 rounded-full">
+										<Image
+											src={currentProfile.user.image ?? ""}
+											alt=""
+											width={64}
+											height={64}
+										/>
+									</div>
+								</div>
+							</div>
+							<div className="stat-value">{incompatibilities.length}</div>
+							<div className="stat-title">Compatibility Measure</div>
+							<div className="stat-desc text-primary">
+								{incompatibilities.length} reported
 							</div>
 						</div>
 					</div>
+				</DashboardCard>
+				<DashboardCard>
+					<div className="text-2xl font-bold">Profile</div>
 					<div>
-						<div className="text-xl font-bold">General Info</div>
-						<div>
-							<div>
-								Year: <span className="font-bold">{profile.year}</span>
-							</div>
-							<div>
-								Committed:{" "}
-								<span className="font-bold">
-									{profile.committed ? "Yes" : "No"}
-								</span>
-							</div>
-							<div>
-								Status: <span className="font-mono">{profile.status}</span>
-							</div>
-						</div>
+						<table className="table-zebra table w-full">
+							<thead>
+								{Object.keys(profile)
+									.filter((key) => !["user", "id", "userId"].includes(key))
+									.map((key) => (
+										<tr key={key}>
+											<th>{key}</th>
+											<td>
+												{JSON.stringify(profile[key as keyof typeof profile])}
+											</td>
+										</tr>
+									))}
+							</thead>
+						</table>
 					</div>
 				</DashboardCard>
 				<InvitationCard profile={profile} />
