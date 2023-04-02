@@ -1,20 +1,16 @@
-import type { Group, Invitation, Membership } from "@prisma/client";
 import { InvitationStatus, Role } from "@prisma/client";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import Groupless from "../components/Groupless";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
+import type { RouterOutputs } from "../utils/trpc";
 import { trpc } from "../utils/trpc";
 
 type InvitationManagerProps = {
-	group: Group & {
-		invitations: Invitation[];
-		members: Membership[];
-	};
-	membership: Membership;
+	membership: NonNullable<RouterOutputs["membership"]["getCurrent"]>;
 };
 
-const InvitationManager = ({ group, membership }: InvitationManagerProps) => {
+const InvitationManager = ({ membership }: InvitationManagerProps) => {
 	const context = trpc.useContext();
 
 	const cancelInvitation = trpc.invitations.delete.useMutation({
@@ -35,7 +31,7 @@ const InvitationManager = ({ group, membership }: InvitationManagerProps) => {
 					<span className="text-sm font-thin">
 						These are the invitations your group has sent to other users.
 					</span>
-					{group.invitations.map((invitation) => (
+					{membership.group.invitations.map((invitation) => (
 						<div
 							key={invitation.id}
 							className="m-2 flex items-center justify-between rounded-md bg-base-200 p-4"
@@ -45,7 +41,7 @@ const InvitationManager = ({ group, membership }: InvitationManagerProps) => {
 									className="link-secondary link text-xl font-bold"
 									href={`/users/${invitation.receiverId}`}
 								>
-									{invitation.receiverId}
+									{invitation.receiver.name}
 								</Link>{" "}
 								- <span className="font-mono">{invitation.status}</span>
 							</div>
@@ -79,7 +75,7 @@ export default function InvitationPage() {
 	return (
 		<MainLayout>
 			<div className="w-full text-3xl font-bold">Your Roommate Group</div>
-			<InvitationManager group={membership.group} membership={membership} />
+			<InvitationManager membership={membership} />
 		</MainLayout>
 	);
 }

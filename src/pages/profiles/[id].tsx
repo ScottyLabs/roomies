@@ -1,4 +1,3 @@
-import type { Profile, User } from "@prisma/client";
 import { InvitationStatus } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -6,13 +5,13 @@ import { toast } from "react-hot-toast";
 import MainLayout, { DashboardCard } from "../../components/MainLayout";
 import { InvitationCreateSchema } from "../../server/common/schemas";
 import { useZodForm } from "../../utils";
+import type { RouterOutputs } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 
 type InvitationCardProps = {
-	profile: Profile & {
-		user: User;
-	};
+	profile: NonNullable<RouterOutputs["profile"]["byId"]>;
 };
+
 const InvitationCard = ({ profile }: InvitationCardProps) => {
 	const methods = useZodForm({
 		schema: InvitationCreateSchema.omit({

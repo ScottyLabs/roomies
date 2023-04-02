@@ -1,20 +1,16 @@
-import type { Group, Invitation, Membership } from "@prisma/client";
 import { Role } from "@prisma/client";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import Groupless from "../components/Groupless";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
+import type { RouterOutputs } from "../utils/trpc";
 import { trpc } from "../utils/trpc";
 
 type GroupCardProps = {
-	group: Group & {
-		invitations: Invitation[];
-		members: Membership[];
-	};
-	membership: Membership;
+	membership: NonNullable<RouterOutputs["membership"]["getCurrent"]>;
 };
 
-const GroupCard = ({ group, membership }: GroupCardProps) => {
+const GroupCard = ({ membership }: GroupCardProps) => {
 	const context = trpc.useContext();
 	const removeMember = trpc.membership.delete.useMutation({
 		onSuccess: async () => {
@@ -35,7 +31,7 @@ const GroupCard = ({ group, membership }: GroupCardProps) => {
 				</span>
 			</div>
 			<div>
-				{group.members.map((member) => (
+				{membership.group.members.map((member) => (
 					<div
 						key={member.id}
 						className="m-2 flex items-center justify-between rounded-md bg-base-200 p-4"
@@ -46,7 +42,7 @@ const GroupCard = ({ group, membership }: GroupCardProps) => {
 									className="link-secondary link text-xl font-bold"
 									href={`/users/${member.userId}`}
 								>
-									{member.userId}
+									{member.user.name}
 								</Link>{" "}
 								- <span className="font-mono">{member.role}</span>
 							</div>
@@ -76,13 +72,9 @@ const GroupCard = ({ group, membership }: GroupCardProps) => {
 };
 
 type ActionCardProps = {
-	membership: Membership & {
-		group: Group & {
-			members: Membership[];
-			invitations: Invitation[];
-		};
-	};
+	membership: NonNullable<RouterOutputs["membership"]["getCurrent"]>;
 };
+
 const ActionCard = ({ membership }: ActionCardProps) => {
 	const context = trpc.useContext();
 
@@ -160,7 +152,7 @@ export default function ManagePage() {
 	return (
 		<MainLayout>
 			<div className="w-full text-3xl font-bold">Your Roommate Group</div>
-			<GroupCard group={membership.group} membership={membership} />
+			<GroupCard membership={membership} />
 			<ActionCard membership={membership} />
 		</MainLayout>
 	);
