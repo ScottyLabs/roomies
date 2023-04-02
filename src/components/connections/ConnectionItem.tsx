@@ -11,7 +11,7 @@ import { ImCross } from "react-icons/im";
 import { trpc } from "../../utils/trpc";
 import { DashboardCard } from "../MainLayout";
 
-const Icons: Record<Media, React.ReactNode> = {
+export const ProviderIcons: Record<Media, React.ReactNode> = {
 	DISCORD: <FaDiscord className="h-8 w-8" />,
 	INSTAGRAM: <FaInstagram className="h-8 w-8" />,
 	FACEBOOK: <FaFacebook className="h-8 w-8" />,
@@ -57,7 +57,7 @@ export const ConnectionItem: React.FC<ConnectionProps> = ({ connection }) => {
 		<DashboardCard>
 			<div className="flex w-72 items-center gap-2 rounded-md bg-base-200 p-2">
 				<div className="flex flex-1 items-center gap-3">
-					{Icons[connection.provider]}
+					{ProviderIcons[connection.provider]}
 					<div>
 						<h5 className="font-thin leading-4">{connection.handle}</h5>
 						<span className="text-xs font-bold">
