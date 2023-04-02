@@ -29,7 +29,7 @@ const Profile = ({ profile }: ProfileProps) => {
 			<div>
 				<div className="flex h-1 items-center gap-2 overflow-visible bg-accent px-4">
 					<div className="badge-accent badge badge-lg">
-						<span className="font-bold">{profile.schools[0]}</span>
+						<span className="font-bold">{profile.school}</span>
 					</div>
 					<div className="badge-accent badge badge-lg">
 						<span className="font-bold">{profile.assigned_sex}</span>
@@ -55,9 +55,7 @@ const Explore: NextPage = () => {
 		(profile) =>
 			profile.user.name?.toLowerCase().includes(query.toLowerCase()) ||
 			profile.user.email?.toLowerCase().includes(query.toLowerCase()) ||
-			profile.schools.some((school) =>
-				school.toLowerCase().includes(query.toLowerCase())
-			)
+			profile.school.toLowerCase().includes(query.toLowerCase())
 	);
 
 	return (

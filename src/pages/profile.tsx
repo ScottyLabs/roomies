@@ -201,13 +201,9 @@ const Profile: NextPage = () => {
 						/>
 					</ProfileField>
 					<div className="divider" />
-					<h4 className="text-lg font-bold">School Preferences</h4>
-					<ProfileField methods={methods} prop="schools">
-						<select
-							className="select w-full"
-							multiple
-							{...methods.register("schools")}
-						>
+					<h4 className="text-lg font-bold">School Attending</h4>
+					<ProfileField methods={methods} prop="school">
+						<select className="select w-full" {...methods.register("school")}>
 							{Object.values(School).map((school) => (
 								<option key={school} value={school}>
 									{school}

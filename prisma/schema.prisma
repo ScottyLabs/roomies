@@ -138,6 +138,9 @@ model Profile {
   committed Boolean
   status    Status
 
+  // School Preferences
+  school School
+
   // Identity
   assigned_sex       Sex
   sexual_orientation String
@@ -147,8 +150,6 @@ model Profile {
   location        String
   health_concerns String
 
-  // School Preferences
-  schools School[]
 
   // Roommate Preferences
   roommate_preferred_gender  String

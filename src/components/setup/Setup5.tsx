@@ -10,7 +10,7 @@ export const Setup5: React.FC = () => {
 
 	const methods = useZodForm({
 		schema: ProfileCreateSchema.pick({
-			schools: true,
+			school: true,
 		}),
 		defaultValues: updateProfile.profile,
 	});
@@ -29,23 +29,15 @@ export const Setup5: React.FC = () => {
 			>
 				<div>
 					<label className="label">
-						<span className="label-text">{ProfileDescriptions.schools}</span>
+						<span className="label-text">{ProfileDescriptions.school}</span>
 					</label>
-					<select
-						className="select w-full"
-						multiple
-						{...methods.register("schools")}
-					>
+					<select className="select w-full" {...methods.register("school")}>
 						{Object.values(School).map((value) => (
 							<option key={value}>{value}</option>
 						))}
 					</select>
 					<span className="text-xs text-error">
-						{methods.formState.errors.schools instanceof Array
-							? methods.formState.errors.schools
-									?.map((error) => error?.message)
-									.join(", ")
-							: methods.formState.errors.schools?.message}
+						{methods.formState.errors.school?.message}
 					</span>
 				</div>
 				<button type="submit" className="btn-primary btn mt-8">
