@@ -14,6 +14,14 @@ export const profileRouter = router({
 				include: { user: true },
 			})
 		),
+	byUserId: publicProcedure
+		.input(z.object({ userId: z.string() }))
+		.query(({ ctx, input }) =>
+			ctx.prisma.profile.findUnique({
+				where: input,
+				include: { user: true },
+			})
+		),
 	getCurrent: protectedProcedure.query(({ ctx }) =>
 		ctx.prisma.profile.findUnique({
 			where: { userId: ctx.session.user.id },
