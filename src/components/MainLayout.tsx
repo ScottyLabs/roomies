@@ -12,7 +12,6 @@ import {
 	FaMapMarked,
 	FaSearchLocation,
 	FaSignOutAlt,
-	FaSpeakap,
 	FaUser,
 	FaUserFriends,
 } from "react-icons/fa";
@@ -132,12 +131,6 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 							<Link href="/manage">
 								<FaHouseUser />
 								<span>Manage</span>
-							</Link>
-						</li>
-						<li>
-							<Link href="/chat">
-								<FaSpeakap />
-								<span>Chat</span>
 							</Link>
 						</li>
 						<li />
