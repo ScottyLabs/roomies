@@ -25,6 +25,7 @@ export const profileRouter = router({
 	getCurrent: protectedProcedure.query(({ ctx }) =>
 		ctx.prisma.profile.findUnique({
 			where: { userId: ctx.session.user.id },
+			include: { user: true },
 		})
 	),
 	create: protectedProcedure
