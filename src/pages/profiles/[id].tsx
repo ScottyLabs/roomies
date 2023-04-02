@@ -84,14 +84,19 @@ const ProfilePage = () => {
 
 						<div className="stat">
 							<div className="stat-figure text-secondary">
-								<div className="online avatar">
-									<div className="w-16 rounded-full">
-										<Image
-											src={currentProfile.user.image ?? ""}
-											alt=""
-											width={64}
-											height={64}
-										/>
+								<div className="indicator">
+									<div className="avatar">
+										<span className="badge-secondary badge indicator-item">
+											Beta
+										</span>
+										<div className="w-16 rounded-full">
+											<Image
+												src={currentProfile.user.image ?? ""}
+												alt=""
+												width={64}
+												height={64}
+											/>
+										</div>
 									</div>
 								</div>
 							</div>
