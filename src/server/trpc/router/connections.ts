@@ -8,6 +8,13 @@ export const connectionsRouter = router({
 			where: { userId: ctx.session?.user.id },
 		})
 	),
+	byUserId: protectedProcedure
+		.input(z.object({ userId: z.string() }))
+		.query(({ ctx, input }) =>
+			ctx.prisma.connection.findMany({
+				where: input,
+			})
+		),
 	remove: protectedProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(({ ctx, input }) =>
