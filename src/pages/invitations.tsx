@@ -29,7 +29,11 @@ const InvitationManager = ({ membership }: InvitationManagerProps) => {
 				<div>
 					<h3 className="font-bold">Invitations</h3>
 					<span className="text-sm font-thin">
-						These are the invitations your group has sent to other users.
+						There are{" "}
+						<span className="font-mono">
+							{membership.group.invitations.length}
+						</span>{" "}
+						outgoing invitations.
 					</span>
 					{membership.group.invitations.map((invitation) => (
 						<div
