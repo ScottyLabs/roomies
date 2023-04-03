@@ -1,7 +1,8 @@
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import type { FC, PropsWithChildren } from "react";
+import { useRouter } from "next/router";
+import { useEffect, type FC, type PropsWithChildren } from "react";
 import {
 	FaBars,
 	FaCircleNotch,
@@ -20,6 +21,13 @@ import { ImCross } from "react-icons/im";
 const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 	const { data: session, status } = useSession({ required: true });
 
+	const router = useRouter();
+
+	useEffect(() => {
+		const drawer = document.getElementById("my-drawer-2") as HTMLInputElement;
+		if (drawer) drawer.checked = false;
+	}, [router.pathname]);
+
 	return (
 		<div className="drawer-mobile drawer">
 			<input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -28,7 +36,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 					<div className="flex-none lg:hidden">
 						<label
 							htmlFor="my-drawer-2"
-							className="swap btn-ghost swap-rotate btn-circle btn"
+							className="swap-rotate swap btn-ghost btn-circle btn"
 						>
 							<input type="checkbox" />
 							<FaBars className="swap-off fill-current" />
