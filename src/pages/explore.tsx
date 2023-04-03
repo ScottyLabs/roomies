@@ -1,8 +1,7 @@
-import { Profile, School, Sex, Status, Volume } from "@prisma/client";
-import type { NextPage } from "next";
+import { School, Sex, Status, Volume } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 import { toast } from "react-hot-toast";
 import { FaList } from "react-icons/fa";
 import type { z } from "zod";
@@ -12,6 +11,7 @@ import { ProfileSearchSchema } from "../server/common/schemas";
 import { useZodForm } from "../utils";
 import type { RouterOutputs } from "../utils/trpc";
 import { trpc } from "../utils/trpc";
+import { type NextPageWithLayout } from "./_app";
 
 type ProfileProps = {
 	profile: NonNullable<RouterOutputs["profile"]["byId"]>;
@@ -98,7 +98,7 @@ function Profiles({ query, filter }: ProfilesProps) {
 	);
 }
 
-const Explore: NextPage = () => {
+const Explore: NextPageWithLayout = () => {
 	const [query, setQuery] = useState("");
 	const [filter, setFilter] = useState({});
 	const [open, setOpen] = useState(false);
@@ -282,7 +282,7 @@ const Explore: NextPage = () => {
 				</form>
 			</Dialog>
 
-			<MainLayout>
+			<>
 				<div className="w-full text-3xl font-bold">Explore</div>
 				<div className="w-full">
 					<label className="input-group">
@@ -303,9 +303,13 @@ const Explore: NextPage = () => {
 					</label>
 				</div>
 				<Profiles query={query} filter={filter} />
-			</MainLayout>
+			</>
 		</>
 	);
+};
+
+Explore.getLayout = function getLayout(page: ReactElement) {
+	return <MainLayout>{page}</MainLayout>;
 };
 
 export default Explore;

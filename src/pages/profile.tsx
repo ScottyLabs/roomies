@@ -7,12 +7,12 @@ import {
 	Status,
 	Volume,
 } from "@prisma/client";
-import type { GetServerSideProps, NextPage } from "next";
+import type { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, type ReactElement } from "react";
 import { toast } from "react-hot-toast";
 import { FaCircleNotch, FaInfoCircle } from "react-icons/fa";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
@@ -22,8 +22,9 @@ import { prisma } from "../server/db/client";
 import { useZodForm } from "../utils";
 import { trpc } from "../utils/trpc";
 import { authOptions } from "./api/auth/[...nextauth]";
+import { type NextPageWithLayout } from "./_app";
 
-const Profile: NextPage = () => {
+const Profile: NextPageWithLayout = () => {
 	const { data: session } = useSession({ required: true });
 	const { data: profile } = trpc.profile.getCurrent.useQuery();
 	const context = trpc.useContext();
@@ -62,7 +63,7 @@ const Profile: NextPage = () => {
 		);
 
 	return (
-		<MainLayout>
+		<>
 			<div className="w-full text-3xl font-bold">Profile</div>
 			<DashboardCard>
 				<div className="flex items-center gap-5">
@@ -474,9 +475,15 @@ const Profile: NextPage = () => {
 					</div>
 				</div>
 			</DashboardCard>
-		</MainLayout>
+		</>
 	);
 };
+
+Profile.getLayout = function getLayout(page: ReactElement) {
+	return <MainLayout>{page}</MainLayout>;
+};
+
+export default Profile;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const session = await unstable_getServerSession(
@@ -503,5 +510,3 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 		props: {},
 	};
 };
-
-export default Profile;

@@ -1,12 +1,13 @@
-import type { NextPage } from "next";
 import Link from "next/link";
+import { type ReactElement } from "react";
 import { ConnectionList } from "../components/connections/ConnectionList";
 import { MediaList } from "../components/connections/MediaList";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
+import { type NextPageWithLayout } from "./_app";
 
-const Connections: NextPage = () => {
+const Connections: NextPageWithLayout = () => {
 	return (
-		<MainLayout>
+		<>
 			<div className="w-full text-3xl font-bold">Connections</div>
 			<div className="w-full">
 				<DashboardCard>
@@ -25,8 +26,12 @@ const Connections: NextPage = () => {
 				</DashboardCard>
 			</div>
 			<ConnectionList />
-		</MainLayout>
+		</>
 	);
+};
+
+Connections.getLayout = function getLayout(page: ReactElement) {
+	return <MainLayout>{page}</MainLayout>;
 };
 
 export default Connections;

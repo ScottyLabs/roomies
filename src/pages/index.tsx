@@ -1,19 +1,18 @@
-import { type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useState } from "react";
-
+import { useState, type ReactElement } from "react";
 import BaseLayout from "../components/BaseLayout";
 import { trpc } from "../utils/trpc";
+import { type NextPageWithLayout } from "./_app";
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
 	const users = trpc.user.getAll.useQuery();
 	const { data: sessionData } = useSession();
 
 	const [exploreHover, setExploreHover] = useState(false);
 
 	return (
-		<BaseLayout>
+		<>
 			<h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
 				Find your <span className="text-primary">Roomies!</span>
 			</h1>
@@ -76,8 +75,12 @@ const Home: NextPage = () => {
 					{sessionData ? "Sign out" : "Sign in"}
 				</button>
 			</div>
-		</BaseLayout>
+		</>
 	);
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+	return <BaseLayout>{page}</BaseLayout>;
 };
 
 export default Home;

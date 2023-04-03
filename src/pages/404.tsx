@@ -1,11 +1,12 @@
-import { type NextPage } from "next";
 import Link from "next/link";
 
+import { ReactElement } from "react";
 import BaseLayout from "../components/BaseLayout";
+import type { NextPageWithLayout } from "./_app";
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
 	return (
-		<BaseLayout>
+		<>
 			<div className="fixed flex h-screen w-screen animate-pulse items-center justify-center font-mono text-[16em] tracking-tighter text-base-content text-primary-content/20 transition-all md:text-[25em]">
 				404
 			</div>
@@ -19,8 +20,12 @@ const Home: NextPage = () => {
 					</Link>
 				</div>
 			</div>
-		</BaseLayout>
+		</>
 	);
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+	return <BaseLayout>{page}</BaseLayout>;
 };
 
 export default Home;

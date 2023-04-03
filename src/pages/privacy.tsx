@@ -1,9 +1,10 @@
-import type { NextPage } from "next";
 import Link from "next/link";
+import { type ReactElement } from "react";
 import BaseLayout from "../components/BaseLayout";
+import { type NextPageWithLayout } from "./_app";
 
-const Privacy: NextPage = () => (
-	<BaseLayout>
+const Privacy: NextPageWithLayout = () => (
+	<>
 		<article className="prose">
 			<h1>PRIVACY POLICY</h1>
 			<h4>Last updated and effective: May 1st, 2022</h4>
@@ -299,7 +300,11 @@ const Privacy: NextPage = () => (
 				<Link href="mailto:adrastopoulos@gmail.com">here</Link>.
 			</p>
 		</article>
-	</BaseLayout>
+	</>
 );
+
+Privacy.getLayout = function getLayout(page: ReactElement) {
+	return <BaseLayout>{page}</BaseLayout>;
+};
 
 export default Privacy;

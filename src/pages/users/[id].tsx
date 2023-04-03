@@ -1,11 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { type ReactElement } from "react";
 import { ProviderIcons } from "../../components/connections/ConnectionItem";
 import MainLayout, { DashboardCard } from "../../components/MainLayout";
 import { trpc } from "../../utils/trpc";
+import { type NextPageWithLayout } from "../_app";
 
-const UserPage = () => {
+const User: NextPageWithLayout = () => {
 	const router = useRouter();
 	const { id } = router.query;
 
@@ -77,4 +79,8 @@ const UserPage = () => {
 	);
 };
 
-export default UserPage;
+User.getLayout = function getLayout(page: ReactElement) {
+	return <MainLayout>{page}</MainLayout>;
+};
+
+export default User;

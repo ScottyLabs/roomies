@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
-import type { GetServerSideProps, NextPage } from "next";
+import type { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 import BaseLayout from "../../components/BaseLayout";
 import { DesktopProgress } from "../../components/setup/DesktopProgress";
 import { MobileProgress } from "../../components/setup/MobileProgress";
@@ -23,6 +23,7 @@ import { Setup9 } from "../../components/setup/Setup9";
 import { prisma } from "../../server/db/client";
 import { SetupSteps } from "../../types/constants";
 import { authOptions } from "../api/auth/[...nextauth]";
+import { type NextPageWithLayout } from "../_app";
 
 const StepForms = [
 	<Setup1 key={1} />,
@@ -46,7 +47,7 @@ type SetupProps = {
 	step: number;
 };
 
-const Setup: NextPage<SetupProps> = ({ step }) => {
+const Setup: NextPageWithLayout<SetupProps> = ({ step }) => {
 	const [isShowing, setIsShowing] = useState(false);
 	const [formStep, setCurrentStep] = useState(step);
 
@@ -60,30 +61,34 @@ const Setup: NextPage<SetupProps> = ({ step }) => {
 	}, [step]);
 
 	return (
-		<BaseLayout>
-			<div className="h-full w-full overflow-hidden">
-				<MobileProgress
-					value={step}
-					max={SetupSteps.length}
-					currentStep={SetupSteps[step - 1]}
-					nextStep={SetupSteps[step]}
-				/>
-				<Transition
-					show={isShowing}
-					enter="transform transition duration-[400ms]"
-					enterFrom="opacity-0 translate-x-48 scale-50"
-					enterTo="opacity-100 translate-x-0 scale-100"
-					leave="transform duration-200 transition ease-in-out"
-					leaveFrom="opacity-100 translate-x-0 scale-100"
-					leaveTo="-translate-x-48 scale-50 opacity-0"
-				>
-					<div className="m-4">{StepForms[formStep - 1]}</div>
-				</Transition>
-				<DesktopProgress values={SetupSteps} step={step} />
-			</div>
-		</BaseLayout>
+		<div className="h-full w-full overflow-hidden">
+			<MobileProgress
+				value={step}
+				max={SetupSteps.length}
+				currentStep={SetupSteps[step - 1]}
+				nextStep={SetupSteps[step]}
+			/>
+			<Transition
+				show={isShowing}
+				enter="transform transition duration-[400ms]"
+				enterFrom="opacity-0 translate-x-48 scale-50"
+				enterTo="opacity-100 translate-x-0 scale-100"
+				leave="transform duration-200 transition ease-in-out"
+				leaveFrom="opacity-100 translate-x-0 scale-100"
+				leaveTo="-translate-x-48 scale-50 opacity-0"
+			>
+				<div className="m-4">{StepForms[formStep - 1]}</div>
+			</Transition>
+			<DesktopProgress values={SetupSteps} step={step} />
+		</div>
 	);
 };
+
+Setup.getLayout = function getLayout(page: ReactElement) {
+	return <BaseLayout>{page}</BaseLayout>;
+};
+
+export default Setup;
 
 export const getServerSideProps: GetServerSideProps<SetupProps> = async (
 	ctx
@@ -124,5 +129,3 @@ export const getServerSideProps: GetServerSideProps<SetupProps> = async (
 		},
 	};
 };
-
-export default Setup;

@@ -1,11 +1,12 @@
-import type { NextPage } from "next";
 import { signIn } from "next-auth/react";
+import { type ReactElement } from "react";
 import { FaGoogle } from "react-icons/fa";
 import BaseLayout from "../../components/BaseLayout";
+import { type NextPageWithLayout } from "../_app";
 
-const SignIn: NextPage = () => {
+const SignIn: NextPageWithLayout = () => {
 	return (
-		<BaseLayout>
+		<>
 			<h1 className="text-5xl font-extrabold tracking-tight text-white">
 				Please <span className="text-primary">Login</span> to view this page.
 			</h1>
@@ -25,8 +26,12 @@ const SignIn: NextPage = () => {
 					Sign in with Google
 				</button>
 			</div>
-		</BaseLayout>
+		</>
 	);
+};
+
+SignIn.getLayout = function getLayout(page: ReactElement) {
+	return <BaseLayout>{page}</BaseLayout>;
 };
 
 export default SignIn;

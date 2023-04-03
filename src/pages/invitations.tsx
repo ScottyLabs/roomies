@@ -2,6 +2,7 @@ import { InvitationStatus, Role } from "@prisma/client";
 import type { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Link from "next/link";
+import { type ReactElement } from "react";
 import { toast } from "react-hot-toast";
 import Groupless from "../components/Groupless";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
@@ -9,6 +10,7 @@ import { prisma } from "../server/db/client";
 import type { RouterOutputs } from "../utils/trpc";
 import { trpc } from "../utils/trpc";
 import { authOptions } from "./api/auth/[...nextauth]";
+import { type NextPageWithLayout } from "./_app";
 
 type InvitationManagerProps = {
 	membership: NonNullable<RouterOutputs["membership"]["getCurrent"]>;
@@ -72,7 +74,7 @@ const InvitationManager = ({ membership }: InvitationManagerProps) => {
 	);
 };
 
-export default function InvitationPage() {
+const Invitation: NextPageWithLayout = () => {
 	const { data: membership, status } = trpc.membership.getCurrent.useQuery();
 
 	if (status === "loading") return <div>Loading...</div>;
@@ -81,12 +83,18 @@ export default function InvitationPage() {
 	if (!membership) return <Groupless />;
 
 	return (
-		<MainLayout>
+		<>
 			<div className="w-full text-3xl font-bold">Your Roommate Group</div>
 			<InvitationManager membership={membership} />
-		</MainLayout>
+		</>
 	);
-}
+};
+
+Invitation.getLayout = function getLayout(page: ReactElement) {
+	return <MainLayout>{page}</MainLayout>;
+};
+
+export default Invitation;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const session = await unstable_getServerSession(

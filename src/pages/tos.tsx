@@ -1,9 +1,10 @@
-import type { NextPage } from "next";
 import Link from "next/link";
+import { type ReactElement } from "react";
 import BaseLayout from "../components/BaseLayout";
+import { type NextPageWithLayout } from "./_app";
 
-const TOS: NextPage = () => (
-	<BaseLayout>
+const TOS: NextPageWithLayout = () => (
+	<>
 		<article className="prose">
 			<h1 className="uppercase">Terms of Service</h1>
 			<h4>Last updated and effective: May 1st, 2022</h4>
@@ -172,7 +173,11 @@ const TOS: NextPage = () => (
 				<Link href="mailto:adrastopoulos@gmail.com">here</Link>.
 			</p>
 		</article>
-	</BaseLayout>
+	</>
 );
+
+TOS.getLayout = function getLayout(page: ReactElement) {
+	return <BaseLayout>{page}</BaseLayout>;
+};
 
 export default TOS;
