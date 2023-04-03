@@ -7,7 +7,6 @@ import {
 	Status,
 	Volume,
 } from "@prisma/client";
-import clsx from "clsx";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
@@ -17,52 +16,12 @@ import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { FaCircleNotch, FaInfoCircle } from "react-icons/fa";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
+import ProfileField from "../components/ProfileField";
 import { ProfileUpdateSchema } from "../server/common/schemas";
 import { prisma } from "../server/db/client";
-import {
-	ProfileDescriptions,
-	ProfileLabels,
-	type ProfileKeys,
-} from "../types/constants";
 import { useZodForm } from "../utils";
 import { trpc } from "../utils/trpc";
 import { authOptions } from "./api/auth/[...nextauth]";
-
-type ProfileFieldProps = React.PropsWithChildren & {
-	methods: ReturnType<typeof useZodForm>;
-	prop: ProfileKeys;
-	transform?: boolean;
-};
-
-const ProfileField: React.FC<ProfileFieldProps> = ({
-	methods,
-	prop,
-	transform = true,
-	children,
-}) => {
-	return (
-		<div className="mx-2">
-			<div
-				className={clsx(
-					`${
-						transform && "sm:flex-center flex-col sm:flex-row"
-					} flex justify-between gap-2`
-				)}
-			>
-				<div>
-					<label className="font-bold">{ProfileLabels[prop]}</label>
-					<p className="text-sm font-thin">{ProfileDescriptions[prop]}</p>
-				</div>
-				<div className="flex flex-col items-end justify-end gap-1 sm:max-w-xs">
-					{children}
-					<div className="text-xs font-bold text-red-700">
-						<>{methods.formState.errors[prop]?.message}</>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-};
 
 const Profile: NextPage = () => {
 	const { data: session } = useSession({ required: true });
