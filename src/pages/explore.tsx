@@ -47,16 +47,34 @@ const Profile = ({ profile }: ProfileProps) => {
 	);
 };
 
-const Explore: NextPage = () => {
-	const { data: profiles } = trpc.profile.getAll.useQuery();
-	const [query, setQuery] = useState("");
+type ProfilesProps = {
+	query: string;
+};
 
-	const filteredProfiles = profiles?.filter(
+function Profiles({ query }: ProfilesProps) {
+	const { data: profiles, status } = trpc.profile.getAll.useQuery();
+
+	if (status === "loading") return <div>Loading...</div>;
+	if (status === "error") return <div>Error</div>;
+
+	const filteredProfiles = profiles.filter(
 		(profile) =>
 			profile.user.name?.toLowerCase().includes(query.toLowerCase()) ||
 			profile.user.email?.toLowerCase().includes(query.toLowerCase()) ||
 			profile.school.toLowerCase().includes(query.toLowerCase())
 	);
+
+	return (
+		<>
+			{filteredProfiles.map((profile) => (
+				<Profile key={profile.id} profile={profile} />
+			))}
+		</>
+	);
+}
+
+const Explore: NextPage = () => {
+	const [query, setQuery] = useState("");
 
 	return (
 		<MainLayout>
@@ -68,9 +86,7 @@ const Explore: NextPage = () => {
 				onChange={(e) => setQuery(e.target.value)}
 				placeholder="Search"
 			/>
-			{filteredProfiles?.map((profile) => (
-				<Profile key={profile.id} profile={profile} />
-			))}
+			<Profiles query={query} />
 		</MainLayout>
 	);
 };
