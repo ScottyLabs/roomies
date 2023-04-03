@@ -112,7 +112,9 @@ export default function Groupless() {
 					))}
 				</div>
 			</DashboardCard>
-			<div className="divider w-full">OR</div>
+			<div className="w-full">
+				<div className="divider w-full max-w-3xl">OR</div>
+			</div>
 			<DashboardCard>
 				<button
 					type="button"
