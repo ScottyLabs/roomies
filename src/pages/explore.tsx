@@ -65,8 +65,6 @@ function Profiles({ query, filter }: ProfilesProps) {
 	if (status === "error") return <div>Error</div>;
 
 	const filteredProfiles = profiles.filter((profile) => {
-		console.log(filter);
-
 		if (!filter.alcohol && profile.alcohol) return false;
 		if (filter.assigned_sex && filter.assigned_sex !== profile.assigned_sex)
 			return false;

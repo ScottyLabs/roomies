@@ -36,8 +36,6 @@ const ProfilePage = () => {
 		return <div>Error</div>;
 	if (!profile || !currentProfile) return <div>Profile not found</div>;
 
-	console.log(incompatibilities);
-
 	return (
 		<MainLayout>
 			<div className="flex w-full flex-col gap-2">

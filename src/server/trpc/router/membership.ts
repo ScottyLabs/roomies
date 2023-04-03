@@ -28,7 +28,6 @@ export const membershipRouter = router({
 	create: protectedProcedure
 		.input(MembershipSchema)
 		.mutation(({ ctx, input }) => {
-			console.log({ ...input, userId: ctx.session.user.id });
 			return ctx.prisma.membership.create({
 				data: { ...input, userId: ctx.session.user.id },
 			});
