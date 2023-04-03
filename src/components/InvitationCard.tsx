@@ -1,7 +1,7 @@
 import { InvitationStatus } from "@prisma/client";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
-import { InvitationCreateSchema } from "../server/common/schemas";
+import { InvitationSchema } from "../server/common/schemas";
 import { useZodForm } from "../utils";
 import type { RouterOutputs } from "../utils/trpc";
 import { trpc } from "../utils/trpc";
@@ -13,7 +13,7 @@ type InvitationCardProps = {
 
 export default function InvitationCard({ profile }: InvitationCardProps) {
 	const methods = useZodForm({
-		schema: InvitationCreateSchema.omit({
+		schema: InvitationSchema.omit({
 			status: true,
 			groupId: true,
 			receiverId: true,
