@@ -55,12 +55,7 @@ const Profile: NextPageWithLayout = () => {
 		methods.reset(profile);
 	}, [profile, methods]);
 
-	if (!session || !profile)
-		return (
-			<MainLayout>
-				<FaCircleNotch className="animate-spin" />
-			</MainLayout>
-		);
+	if (!session || !profile) return <FaCircleNotch className="animate-spin" />;
 
 	return (
 		<>
