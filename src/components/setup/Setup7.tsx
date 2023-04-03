@@ -1,6 +1,6 @@
 import { Bathroom, Dorm } from "@prisma/client";
 import { useRouter } from "next/router";
-import { ProfileCreateSchema } from "../../server/common/schemas";
+import { ProfileSchema } from "../../server/common/schemas";
 import { ProfileDescriptions } from "../../types/constants";
 import { useProfileStore, useZodForm } from "../../utils";
 
@@ -9,7 +9,7 @@ export const Setup7: React.FC = () => {
 	const router = useRouter();
 
 	const methods = useZodForm({
-		schema: ProfileCreateSchema.pick({
+		schema: ProfileSchema.pick({
 			preferred_dorm: true,
 			bathroom_preference: true,
 			quiet_dorm: true,

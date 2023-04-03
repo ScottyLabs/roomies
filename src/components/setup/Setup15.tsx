@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { FaCircleNotch } from "react-icons/fa";
-import { ProfileCreateSchema } from "../../server/common/schemas";
+import { ProfileSchema } from "../../server/common/schemas";
 import {
 	ProfileLabels,
 	SetupSections,
@@ -30,7 +30,7 @@ export const Setup15: React.FC = () => {
 	});
 
 	const methods = useZodForm({
-		schema: ProfileCreateSchema,
+		schema: ProfileSchema,
 		defaultValues: updateProfile.profile,
 	});
 

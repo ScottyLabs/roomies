@@ -1,6 +1,6 @@
 import { Volume } from "@prisma/client";
 import { useRouter } from "next/router";
-import { ProfileCreateSchema } from "../../server/common/schemas";
+import { ProfileSchema } from "../../server/common/schemas";
 import { ProfileDescriptions } from "../../types/constants";
 import { useProfileStore, useZodForm } from "../../utils";
 
@@ -9,7 +9,7 @@ export const Setup8: React.FC = () => {
 	const router = useRouter();
 
 	const methods = useZodForm({
-		schema: ProfileCreateSchema.pick({
+		schema: ProfileSchema.pick({
 			wake: true,
 			time_to_ready: true,
 			day_volume: true,
