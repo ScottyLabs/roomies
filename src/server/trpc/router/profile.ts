@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ProfileCreateSchema, ProfileUpdateSchema } from "../../common/schemas";
+import { ProfileSchema, ProfileUpdateSchema } from "../../common/schemas";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const profileRouter = router({
@@ -28,13 +28,11 @@ export const profileRouter = router({
 			include: { user: true },
 		})
 	),
-	create: protectedProcedure
-		.input(ProfileCreateSchema)
-		.mutation(({ ctx, input }) =>
-			ctx.prisma.profile.create({
-				data: { ...input, userId: ctx.session.user.id },
-			})
-		),
+	create: protectedProcedure.input(ProfileSchema).mutation(({ ctx, input }) =>
+		ctx.prisma.profile.create({
+			data: { ...input, userId: ctx.session.user.id },
+		})
+	),
 	update: publicProcedure
 		.input(ProfileUpdateSchema)
 		.mutation(({ ctx, input }) =>

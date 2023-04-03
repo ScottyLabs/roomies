@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-	InvitationCreateSchema,
-	InvitationUpdateSchema,
-} from "../../common/schemas";
+import { InvitationSchema, InvitationUpdateSchema } from "../../common/schemas";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const invitationRouter = router({
@@ -32,7 +29,7 @@ export const invitationRouter = router({
 			})
 		),
 	create: protectedProcedure
-		.input(InvitationCreateSchema)
+		.input(InvitationSchema)
 		.mutation(({ ctx, input }) =>
 			ctx.prisma.invitation.create({
 				data: {

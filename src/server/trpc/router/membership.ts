@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-	MembershipCreateSchema,
-	MembershipUpdateSchema,
-} from "../../common/schemas";
+import { MembershipSchema, MembershipUpdateSchema } from "../../common/schemas";
 import { protectedProcedure, router } from "../trpc";
 
 export const membershipRouter = router({
@@ -29,7 +26,7 @@ export const membershipRouter = router({
 		})
 	),
 	create: protectedProcedure
-		.input(MembershipCreateSchema)
+		.input(MembershipSchema)
 		.mutation(({ ctx, input }) => {
 			console.log({ ...input, userId: ctx.session.user.id });
 			return ctx.prisma.membership.create({

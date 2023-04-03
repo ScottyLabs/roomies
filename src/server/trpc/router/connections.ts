@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ConnectionCreateSchema } from "../../common/schemas";
+import { ConnectionSchema } from "../../common/schemas";
 import { protectedProcedure, router } from "../trpc";
 
 export const connectionsRouter = router({
@@ -21,7 +21,7 @@ export const connectionsRouter = router({
 			ctx.prisma.connection.delete({ where: input })
 		),
 	create: protectedProcedure
-		.input(ConnectionCreateSchema)
+		.input(ConnectionSchema)
 		.mutation(({ ctx, input }) =>
 			ctx.prisma.connection.create({
 				data: { ...input, userId: ctx.session.user.id },
