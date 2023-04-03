@@ -1,14 +1,23 @@
+import type { GetServerSideProps } from "next";
+import { unstable_getServerSession } from "next-auth";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FaGraduationCap, FaSignature } from "react-icons/fa";
 import InvitationCard from "../../components/InvitationCard";
 import MainLayout, { DashboardCard } from "../../components/MainLayout";
+import { prisma } from "../../server/db/client";
 import type { Incompatibility } from "../../utils/compatibility";
 import compatibility from "../../utils/compatibility";
+import type { RouterOutputs } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
+import { authOptions } from "../api/auth/[...nextauth]";
 
-const ProfilePage = () => {
+type ProfileProps = {
+	currentProfile: NonNullable<RouterOutputs["profile"]["getCurrent"]>;
+};
+
+const ProfilePage = ({ currentProfile }: ProfileProps) => {
 	const router = useRouter();
 	const { id } = router.query;
 
@@ -16,9 +25,6 @@ const ProfilePage = () => {
 		{ id: id as string },
 		{ enabled: typeof id === "string" }
 	);
-
-	const { data: currentProfile, status: currentProfileStatus } =
-		trpc.profile.getCurrent.useQuery();
 
 	const [incompatibilities, setIncompatibilities] = useState<Incompatibility[]>(
 		[]
@@ -30,11 +36,9 @@ const ProfilePage = () => {
 		}
 	}, [profile, currentProfile]);
 
-	if (profileStatus === "loading" || currentProfileStatus === "loading")
-		return <div>Loading...</div>;
-	if (profileStatus === "error" || currentProfileStatus === "error")
-		return <div>Error</div>;
-	if (!profile || !currentProfile) return <div>Profile not found</div>;
+	if (profileStatus === "loading") return <div>Loading...</div>;
+	if (profileStatus === "error") return <div>Error</div>;
+	if (!profile) return <div>Profile not found</div>;
 
 	return (
 		<MainLayout>
@@ -128,3 +132,32 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
+export const getServerSideProps: GetServerSideProps<ProfileProps> = async (
+	ctx
+) => {
+	const session = await unstable_getServerSession(
+		ctx.req,
+		ctx.res,
+		authOptions
+	);
+
+	const profile = await prisma.profile.findUnique({
+		where: { userId: session?.user.id },
+		include: { user: true },
+	});
+
+	if (!profile)
+		return {
+			redirect: {
+				destination: "/setup/1",
+				permanent: true,
+			},
+		};
+
+	return {
+		props: {
+			currentProfile: profile,
+		},
+	};
+};
