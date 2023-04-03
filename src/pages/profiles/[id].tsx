@@ -110,7 +110,7 @@ const ProfilePage = () => {
 				</DashboardCard>
 				<DashboardCard>
 					<div className="text-2xl font-bold">Profile</div>
-					<div>
+					<div className="w-full overflow-x-auto">
 						<table className="table-zebra table w-full">
 							<thead>
 								{Object.keys(profile)
