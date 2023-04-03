@@ -66,9 +66,7 @@ const ProfilePage = () => {
 							</div>
 							<div className="stat-title">Graduation Year</div>
 							<div className="stat-value text-primary">{profile.year}</div>
-							<div className="stat-desc">21% more than last month</div>
 						</div>
-
 						<div className="stat">
 							<div className="stat-figure text-secondary">
 								<FaSignature className="h-10 w-10" />
@@ -77,9 +75,7 @@ const ProfilePage = () => {
 							<div className="stat-value text-secondary">
 								{profile.committed.toString()}
 							</div>
-							<div className="stat-desc">21% more than last month</div>
 						</div>
-
 						<div className="stat">
 							<div className="stat-figure text-secondary">
 								<div className="indicator">
