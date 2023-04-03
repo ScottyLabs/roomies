@@ -1,7 +1,7 @@
 import { InvitationStatus, Role } from "@prisma/client";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
-import MainLayout, { DashboardCard } from "../components/MainLayout";
+import { DashboardCard } from "../components/MainLayout";
 import { trpc } from "../utils/trpc";
 
 export default function Groupless() {
@@ -53,7 +53,7 @@ export default function Groupless() {
 	if (status === "error") return <div>Error</div>;
 
 	return (
-		<MainLayout>
+		<>
 			<div className="w-full text-3xl font-bold">Accept An Invitation</div>
 			<DashboardCard>
 				<div>
@@ -124,6 +124,6 @@ export default function Groupless() {
 					Create a new group
 				</button>
 			</DashboardCard>
-		</MainLayout>
+		</>
 	);
 }
