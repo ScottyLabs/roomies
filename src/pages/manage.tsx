@@ -1,10 +1,14 @@
 import { Role } from "@prisma/client";
+import type { GetServerSideProps } from "next";
+import { unstable_getServerSession } from "next-auth";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import Groupless from "../components/Groupless";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
+import { prisma } from "../server/db/client";
 import type { RouterOutputs } from "../utils/trpc";
 import { trpc } from "../utils/trpc";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 type GroupCardProps = {
 	membership: NonNullable<RouterOutputs["membership"]["getCurrent"]>;
@@ -157,3 +161,29 @@ export default function ManagePage() {
 		</MainLayout>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const session = await unstable_getServerSession(
+		ctx.req,
+		ctx.res,
+		authOptions
+	);
+
+	const profile = await prisma.profile.findUnique({
+		where: {
+			userId: session?.user.id,
+		},
+	});
+
+	if (!profile)
+		return {
+			redirect: {
+				destination: "/setup/1",
+				permanent: true,
+			},
+		};
+
+	return {
+		props: {},
+	};
+};

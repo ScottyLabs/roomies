@@ -8,7 +8,8 @@ import {
 	Volume,
 } from "@prisma/client";
 import clsx from "clsx";
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -17,6 +18,7 @@ import { toast } from "react-hot-toast";
 import { FaCircleNotch, FaInfoCircle } from "react-icons/fa";
 import MainLayout, { DashboardCard } from "../components/MainLayout";
 import { ProfileUpdateSchema } from "../server/common/schemas";
+import { prisma } from "../server/db/client";
 import {
 	ProfileDescriptions,
 	ProfileLabels,
@@ -24,6 +26,7 @@ import {
 } from "../types/constants";
 import { useZodForm } from "../utils";
 import { trpc } from "../utils/trpc";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 type ProfileFieldProps = React.PropsWithChildren & {
 	methods: ReturnType<typeof useZodForm>;
@@ -514,6 +517,32 @@ const Profile: NextPage = () => {
 			</DashboardCard>
 		</MainLayout>
 	);
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const session = await unstable_getServerSession(
+		ctx.req,
+		ctx.res,
+		authOptions
+	);
+
+	const profile = await prisma.profile.findUnique({
+		where: {
+			userId: session?.user.id,
+		},
+	});
+
+	if (!profile)
+		return {
+			redirect: {
+				destination: "/setup/1",
+				permanent: true,
+			},
+		};
+
+	return {
+		props: {},
+	};
 };
 
 export default Profile;
