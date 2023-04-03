@@ -1,4 +1,3 @@
-import type { User } from "@prisma/client";
 import { Profile, School, Sex, Status, Volume } from "@prisma/client";
 import type { NextPage } from "next";
 import Image from "next/image";
@@ -6,17 +5,16 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { FaList } from "react-icons/fa";
-import { z } from "zod";
+import type { z } from "zod";
 import { Dialog } from "../components/Dialog";
 import MainLayout from "../components/MainLayout";
 import { ProfileSearchSchema } from "../server/common/schemas";
 import { useZodForm } from "../utils";
+import type { RouterOutputs } from "../utils/trpc";
 import { trpc } from "../utils/trpc";
 
 type ProfileProps = {
-	profile: Profile & {
-		user: User;
-	};
+	profile: NonNullable<RouterOutputs["profile"]["byId"]>;
 };
 
 const Profile = ({ profile }: ProfileProps) => {
