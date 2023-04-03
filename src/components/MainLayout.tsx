@@ -98,7 +98,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 					</div>
 					<ul className="menu p-4 text-base-content">
 						<li className="menu-title">
-							<span>Setup</span>
+							<span>User Settings</span>
 						</li>
 						<li>
 							<Link href="/profile">
@@ -111,15 +111,15 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 								<span>Connections</span>
 							</Link>
 						</li>
+						<li />
+						<li className="menu-title">
+							<span>Find Your Roomies</span>
+						</li>
 						<li>
 							<Link href="/explore">
 								<FaMapMarked />
 								<span>Explore</span>
 							</Link>
-						</li>
-						<li />
-						<li className="menu-title">
-							<span>Group</span>
 						</li>
 						<li>
 							<Link href="/invitations">
