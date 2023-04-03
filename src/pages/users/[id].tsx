@@ -29,7 +29,7 @@ const User: NextPageWithLayout = () => {
 	if (!user || !connections) return <div>User not found</div>;
 
 	return (
-		<MainLayout>
+		<>
 			<DashboardCard>
 				<div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
 					<div className="flex items-center justify-between gap-4">
@@ -75,7 +75,7 @@ const User: NextPageWithLayout = () => {
 					))}
 				</div>
 			</div>
-		</MainLayout>
+		</>
 	);
 };
 
