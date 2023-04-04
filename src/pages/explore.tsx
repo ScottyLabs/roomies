@@ -132,16 +132,16 @@ const Explore: NextPageWithLayout = () => {
 	const methods = useZodForm({
 		schema: ProfileSearchSchema,
 		defaultValues: {
-			alcohol: false,
+			alcohol: true,
 			assigned_sex: null,
-			committed: null,
+			committed: true,
 			day_volume: null,
-			drugs: false,
-			minimum_neatness: null,
-			minimum_social_energy_level: null,
+			drugs: true,
+			minimum_neatness: 0,
+			minimum_social_energy_level: 0,
 			night_volume: null,
 			school: null,
-			snore: null,
+			snore: true,
 			status: null,
 		},
 	});
