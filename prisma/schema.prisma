@@ -210,8 +210,6 @@ model Connection {
   userId   String
   provider Media
   handle   String
-
-  @@unique([provider, handle])
 }
 
 enum InvitationStatus {
