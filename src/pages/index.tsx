@@ -1,14 +1,45 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState, type ReactElement } from "react";
+import { FaCircleNotch } from "react-icons/fa";
 import BaseLayout from "../components/BaseLayout";
 import { trpc } from "../utils/trpc";
 import { type NextPageWithLayout } from "./_app";
 
-const Home: NextPageWithLayout = () => {
+function Login() {
 	const users = trpc.user.getAll.useQuery();
-	const { data: sessionData } = useSession();
+	const session = useSession();
 
+	if (users.status === "loading" || session.status === "loading")
+		return <FaCircleNotch className="animate-spin" />;
+	if (users.status === "error") return <div>Failed to load users</div>;
+
+	return (
+		<div className="flex flex-col items-center justify-center gap-4">
+			<p className="text-center text-2xl">
+				{session.status === "authenticated" ? (
+					<span>Logged in as {session.data.user.name}</span>
+				) : (
+					<span>
+						Join <span className="font-mono">{users.data.length}</span> others!
+					</span>
+				)}
+			</p>
+			<button
+				className="btn-ghost btn rounded-full bg-white/10"
+				onClick={
+					session.status === "authenticated"
+						? () => signOut({ redirect: false })
+						: () => signIn("google")
+				}
+			>
+				{session.status === "authenticated" ? "Sign out" : "Sign in"}
+			</button>
+		</div>
+	);
+}
+
+const Home: NextPageWithLayout = () => {
 	const [exploreHover, setExploreHover] = useState(false);
 
 	return (
@@ -48,32 +79,8 @@ const Home: NextPageWithLayout = () => {
 					</div>
 				</Link>
 			</div>
-			<div className="flex flex-col items-center justify-center gap-4">
-				{!sessionData && (
-					<p className="text-2xl">
-						{users.data ? (
-							<>
-								Join <span className="font-mono">{users.data.length}</span>{" "}
-								others!
-							</>
-						) : (
-							"Loading users..."
-						)}
-					</p>
-				)}
-				<p className="text-center text-2xl">
-					{sessionData && <span>Logged in as {sessionData.user.name}</span>}
-				</p>
-				<button
-					className="btn-ghost btn rounded-full bg-white/10"
-					onClick={
-						sessionData
-							? () => signOut({ redirect: false })
-							: () => signIn("google")
-					}
-				>
-					{sessionData ? "Sign out" : "Sign in"}
-				</button>
+			<div className="h-20">
+				<Login />
 			</div>
 		</>
 	);
