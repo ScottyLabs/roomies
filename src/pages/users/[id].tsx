@@ -59,7 +59,9 @@ const User: NextPageWithLayout = () => {
 					</div>
 				</div>
 			</DashboardCard>
-			<div className="divider w-full max-w-3xl" />
+			<div className="w-full">
+				<div className="divider w-full max-w-3xl" />
+			</div>
 			<div className="w-full max-w-3xl">
 				<div className="flex flex-wrap gap-2">
 					{connections.map((connection) => (
