@@ -78,26 +78,22 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 		);
 	if (theirMembership) return <div>User is already in group.</div>;
 
+	const invitation = outgoingInvitations.find(
+		(invitation) =>
+			invitation.receiverId === profile.userId &&
+			invitation.status === InvitationStatus.PENDING
+	);
+
 	return (
 		<DashboardCard>
-			{outgoingInvitations.some(
-				(invitation) =>
-					invitation.receiverId === profile.userId &&
-					invitation.status === InvitationStatus.PENDING
-			) ? (
+			{invitation ? (
 				<div className="flex items-center justify-between gap-4">
 					<span className="text-sm font-bold opacity-50">
 						Invitation pending.
 					</span>
 					<button
 						type="button"
-						onClick={() =>
-							cancelInvitation.mutate({
-								id: outgoingInvitations.find(
-									(invitation) => invitation.receiverId === profile.userId
-								)!.id,
-							})
-						}
+						onClick={() => cancelInvitation.mutate({ id: invitation.id })}
 						className="btn-error btn-sm btn"
 					>
 						Cancel Invitation
