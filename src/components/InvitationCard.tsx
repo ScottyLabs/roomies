@@ -1,6 +1,7 @@
 import { InvitationStatus } from "@prisma/client";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
+import { FaCircleNotch } from "react-icons/fa";
 import { InvitationSchema } from "../server/common/schemas";
 import { useZodForm } from "../utils";
 import type { RouterOutputs } from "../utils/trpc";
@@ -58,25 +59,36 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 		membershipStatus === "loading" ||
 		theirMembershipStatus === "loading"
 	)
-		return <div>Loading...</div>;
+		return (
+			<DashboardCard>
+				<FaCircleNotch className="animate-spin" />
+			</DashboardCard>
+		);
+
 	if (
 		invitationStatus === "error" ||
 		membershipStatus === "error" ||
 		theirMembershipStatus === "error"
 	)
-		return <div>Error</div>;
+		return (
+			<DashboardCard>
+				Failed to load data. Please try again later.
+			</DashboardCard>
+		);
 
 	if (!membership)
 		return (
-			<div>
+			<DashboardCard>
 				Join or{" "}
 				<Link className="link" href="/manage">
 					create
 				</Link>{" "}
 				a group to invite others.
-			</div>
+			</DashboardCard>
 		);
-	if (theirMembership) return <div>User is already in group.</div>;
+
+	if (theirMembership)
+		return <DashboardCard>This user is already in a group.</DashboardCard>;
 
 	const invitation = outgoingInvitations.find(
 		(invitation) =>
