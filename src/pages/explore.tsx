@@ -149,7 +149,21 @@ const Explore: NextPageWithLayout = () => {
 	return (
 		<>
 			<Dialog isOpen={open} onClose={() => setOpen(false)}>
-				<div className="text-lg font-medium leading-6">Filter Profiles</div>
+				<div className="flex justify-between">
+					<div className="flex-1 text-lg font-medium leading-6">
+						Filter Profiles
+					</div>
+					<button
+						onClick={() => {
+							methods.reset();
+							setFilter({});
+							setOpen(false);
+						}}
+						className="btn-accent btn-xs btn"
+					>
+						Reset
+					</button>
+				</div>
 				<form
 					onSubmit={methods.handleSubmit(
 						(data) => {
