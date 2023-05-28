@@ -201,11 +201,11 @@ const Privacy: NextPageWithLayout = () => (
 				agreements and policies.
 			</p>
 			<p>
-				Melms Media LLC will also retain Usage Data for internal analysis
-				purposes. Usage Data is generally retained for a shorter period of time,
-				except when this data is used to strengthen the security or to improve
-				the functionality of our Service, or we are legally obligated to retain
-				this data for longer periods.
+				Roomies will also retain Usage Data for internal analysis purposes.
+				Usage Data is generally retained for a shorter period of time, except
+				when this data is used to strengthen the security or to improve the
+				functionality of our Service, or we are legally obligated to retain this
+				data for longer periods.
 			</p>
 			<h2>Transfer of Data</h2>
 			<p>
@@ -224,11 +224,11 @@ const Privacy: NextPageWithLayout = () => (
 				information represents your agreement to that transfer.
 			</p>
 			<p>
-				Melms Media LLC will take all the steps reasonably necessary to ensure
-				that your data is treated securely and in accordance with this Privacy
-				Policy and no transfer of your Personal Data will take place to an
-				organisation or a country unless there are adequate controls in place
-				including the security of your data and other personal information.
+				Roomies will take all the steps reasonably necessary to ensure that your
+				data is treated securely and in accordance with this Privacy Policy and
+				no transfer of your Personal Data will take place to an organisation or
+				a country unless there are adequate controls in place including the
+				security of your data and other personal information.
 			</p>
 			<h2>Disclosure of Data</h2>
 			<h4>Legal Requirements</h4>
