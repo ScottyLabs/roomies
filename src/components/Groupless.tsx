@@ -74,7 +74,7 @@ export default function Groupless() {
 										className="link-secondary link text-xl font-bold"
 										href={`/users/${invitation.receiverId}`}
 									>
-										{invitation.senderId}
+										{invitation.sender.name}
 									</Link>{" "}
 									- <span className="font-mono">{invitation.status}</span>
 								</div>
