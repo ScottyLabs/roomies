@@ -17,10 +17,11 @@ import {
 	FaUserFriends,
 } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
+import { trpc } from "../utils/trpc";
 
 const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 	const { data: session, status } = useSession({ required: true });
-
+	const invitations = trpc.invitations.getIncoming.useQuery();
 	const router = useRouter();
 
 	useEffect(() => {
@@ -36,7 +37,7 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 					<div className="flex-none lg:hidden">
 						<label
 							htmlFor="my-drawer-2"
-							className="swap btn-ghost swap-rotate btn-circle btn"
+							className="swap-rotate swap btn-ghost btn-circle btn"
 						>
 							<input type="checkbox" />
 							<FaBars className="swap-off fill-current" />
@@ -130,9 +131,14 @@ const MainLayout: FC<PropsWithChildren> = ({ children }) => {
 							</Link>
 						</li>
 						<li>
-							<Link href="/invitations">
+							<Link href="/invitations" className="flex justify-between">
 								<FaEnvelope />
-								<span>Invitations</span>
+								<span className="flex-1">Invitations</span>
+								{!!invitations?.data?.length && (
+									<span className="badge-accent badge badge-sm float-right">
+										{invitations.data.length} INCOMING
+									</span>
+								)}
 							</Link>
 						</li>
 						<li>
