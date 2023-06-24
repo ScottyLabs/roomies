@@ -79,11 +79,15 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 	if (!membership)
 		return (
 			<DashboardCard>
-				Join or{" "}
-				<Link className="link" href="/manage">
-					create
-				</Link>{" "}
-				a group to invite others.
+				<div>
+					Join or{" "}
+					<span>
+						<Link className="link" href="/manage">
+							create
+						</Link>{" "}
+					</span>
+					a group to invite others.
+				</div>
 			</DashboardCard>
 		);
 
