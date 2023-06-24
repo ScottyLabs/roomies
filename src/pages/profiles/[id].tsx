@@ -71,7 +71,7 @@ const Profile: NextPageWithLayout<ProfileProps> = ({ currentProfile }) => {
 					<div className="flex flex-col items-center justify-center gap-4">
 						<div className="indicator">
 							<div className="avatar">
-								<span className="badge-primary badge indicator-item">
+								<span className="badge badge-primary indicator-item">
 									{profile.status}
 								</span>
 								<div className="mask mask-circle w-36">
@@ -113,7 +113,7 @@ const Profile: NextPageWithLayout<ProfileProps> = ({ currentProfile }) => {
 							<div className="stat-figure text-secondary">
 								<div className="indicator">
 									<div className="avatar">
-										<span className="badge-secondary badge indicator-item">
+										<span className="badge badge-secondary indicator-item">
 											Beta
 										</span>
 										<div className="w-16 rounded-full">

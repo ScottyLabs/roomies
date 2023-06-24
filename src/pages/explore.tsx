@@ -32,10 +32,10 @@ const Profile = ({ profile }: ProfileProps) => {
 			</div>
 			<div>
 				<div className="flex h-1 items-center gap-2 overflow-visible bg-accent px-4">
-					<div className="badge-accent badge badge-lg">
+					<div className="badge badge-accent badge-lg">
 						<span className="font-bold">{profile.school}</span>
 					</div>
-					<div className="badge-accent badge badge-lg">
+					<div className="badge badge-accent badge-lg">
 						<span className="font-bold">{profile.assigned_sex}</span>
 					</div>
 				</div>
