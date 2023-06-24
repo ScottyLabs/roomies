@@ -21,7 +21,7 @@ export const Setup15: React.FC = () => {
 
 	const createProfile = trpc.profile.create.useMutation({
 		onSuccess: async () => {
-			await router.push("/profile");
+			await router.push("/overview");
 			toast.success("Profile created!");
 		},
 		onError: (error) => {
