@@ -57,7 +57,7 @@ const Profile: NextPageWithLayout<ProfileProps> = ({ currentProfile }) => {
 		<>
 			<Dialog isOpen={open} onClose={() => setOpen(false)}>
 				<div className="text-2xl font-medium leading-6">Incompatibilities</div>
-				<div>
+				<div className="mt-2">
 					{incompatibilities.map((incompatibility) => (
 						<div className="text-red-500" key={incompatibility.message}>
 							{incompatibility.message}
