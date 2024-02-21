@@ -1,18 +1,17 @@
-import { InvitationStatus, Role } from "@prisma/client";
-import Link from "next/link";
+import { Role } from "@prisma/client";
 import { toast } from "react-hot-toast";
-import { DashboardCard } from "../components/MainLayout";
-import { trpc } from "../utils/trpc";
+import { api } from "utils/trpc";
+import { DashboardCard } from "./DashboardCard";
+import IncomingInvitation from "./IncomingInvitation";
 
 export default function Groupless() {
-	const { data: incomingInvitations, status } =
-		trpc.invitations.getIncoming.useQuery();
+	const [incomingInvitations] = api.invitations.getIncoming.useSuspenseQuery();
 
-	const context = trpc.useContext();
+	const utils = api.useUtils();
 
-	const createMembership = trpc.membership.create.useMutation({
+	const createMembership = api.memberships.create.useMutation({
 		onSuccess: async () => {
-			await context.membership.invalidate();
+			await utils.memberships.invalidate();
 			toast.success("Membership created");
 		},
 		onError: () => {
@@ -20,23 +19,7 @@ export default function Groupless() {
 		},
 	});
 
-	const updateInvitation = trpc.invitations.update.useMutation({
-		onSuccess: async (data) => {
-			if (data.status === InvitationStatus.ACCEPTED) {
-				toast.success("Invitation accepted");
-				createMembership.mutate({
-					groupId: data.groupId,
-					role: Role.MEMBER,
-				});
-			} else {
-				toast.success("Invitation rejected");
-			}
-
-			await context.invitations.invalidate();
-		},
-	});
-
-	const createGroup = trpc.groups.create.useMutation({
+	const createGroup = api.groups.create.useMutation({
 		onSuccess: async (data) => {
 			toast.success("Group created");
 			createMembership.mutate({
@@ -48,9 +31,6 @@ export default function Groupless() {
 			toast.error("Failed to create group");
 		},
 	});
-
-	if (status === "loading") return <div>Loading...</div>;
-	if (status === "error") return <div>Error</div>;
 
 	return (
 		<>
@@ -64,51 +44,7 @@ export default function Groupless() {
 						pending invitations.
 					</span>
 					{incomingInvitations.map((invitation) => (
-						<div
-							key={invitation.id}
-							className="m-2 flex items-center justify-between rounded-md bg-base-200 p-4"
-						>
-							<div>
-								<div className="text-lg">
-									<Link
-										className="link-secondary link text-xl font-bold"
-										href={`/users/${invitation.receiverId}`}
-									>
-										{invitation.sender.name}
-									</Link>{" "}
-									- <span className="font-mono">{invitation.status}</span>
-								</div>
-								<span className="text-sm opacity-70">{invitation.message}</span>
-							</div>
-							<div className="flex gap-2">
-								<button
-									type="button"
-									onClick={() =>
-										updateInvitation.mutate({
-											id: invitation.id,
-											status: InvitationStatus.DECLINED,
-										})
-									}
-									disabled={invitation.status !== InvitationStatus.PENDING}
-									className="btn-error btn-sm btn"
-								>
-									Decline
-								</button>
-								<button
-									type="button"
-									onClick={() =>
-										updateInvitation.mutate({
-											id: invitation.id,
-											status: InvitationStatus.ACCEPTED,
-										})
-									}
-									disabled={invitation.status !== InvitationStatus.PENDING}
-									className="btn-success btn-sm btn"
-								>
-									Accept
-								</button>
-							</div>
-						</div>
+						<IncomingInvitation invitation={invitation} key={invitation.id} />
 					))}
 				</div>
 			</DashboardCard>
@@ -119,7 +55,7 @@ export default function Groupless() {
 				<button
 					type="button"
 					onClick={() => createGroup.mutate()}
-					className="btn-primary btn w-full"
+					className="btn btn-primary w-full"
 				>
 					Create a new group
 				</button>

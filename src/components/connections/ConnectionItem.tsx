@@ -1,4 +1,5 @@
 import type { Connection, Media } from "@prisma/client";
+import { DashboardCard } from "components/DashboardCard";
 import { toast } from "react-hot-toast";
 import {
 	FaDiscord,
@@ -8,8 +9,7 @@ import {
 	FaTwitter,
 } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
-import { trpc } from "../../utils/trpc";
-import { DashboardCard } from "../MainLayout";
+import { api } from "utils/trpc";
 
 export const ProviderIcons: Record<Media, React.ReactNode> = {
 	DISCORD: <FaDiscord className="h-8 w-8" />,
@@ -41,9 +41,9 @@ type ConnectionProps = {
 };
 
 export const ConnectionItem: React.FC<ConnectionProps> = ({ connection }) => {
-	const context = trpc.useContext();
+	const context = api.useContext();
 
-	const removeConnection = trpc.connections.remove.useMutation({
+	const removeConnection = api.connections.remove.useMutation({
 		onSuccess: async () => {
 			await context.connections.invalidate();
 			toast.success("Connection removed");
@@ -67,7 +67,7 @@ export const ConnectionItem: React.FC<ConnectionProps> = ({ connection }) => {
 				</div>
 				<div className="flex-0">
 					<button
-						className="btn-ghost btn-sm btn-circle btn"
+						className="btn btn-circle btn-ghost btn-sm"
 						onClick={() => removeConnection.mutate({ id: connection.id })}
 					>
 						<ImCross />

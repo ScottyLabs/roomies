@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import type { ProfileKeys } from "../types/constants";
-import { ProfileDescriptions, ProfileLabels } from "../types/constants";
-import type { useZodForm } from "../utils";
+import type { useZodForm } from "lib";
+import type { ProfileKeys } from "types/constants";
+import { ProfileDescriptions, ProfileLabels } from "types/constants";
 
 type ProfileFieldProps = React.PropsWithChildren & {
 	methods: ReturnType<typeof useZodForm>;

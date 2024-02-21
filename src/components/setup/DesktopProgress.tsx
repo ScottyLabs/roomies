@@ -20,7 +20,7 @@ export const DesktopProgress: React.FC<DesktopProgressProps> = ({
 						>
 							<Link
 								href={`/setup/${i + 1}`}
-								className="link-hover link text-xs font-extralight"
+								className="link link-hover text-xs font-extralight"
 							>
 								{value}
 							</Link>

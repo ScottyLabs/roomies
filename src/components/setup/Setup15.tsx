@@ -1,25 +1,25 @@
-import { useSession } from "next-auth/react";
+import { useSession } from "@clerk/nextjs";
+import { useProfileStore, useZodForm } from "lib";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { FaCircleNotch } from "react-icons/fa";
-import { ProfileSchema } from "../../server/common/schemas";
 import {
 	ProfileLabels,
 	SetupSections,
 	SetupSteps,
 	type ProfileKeys,
-} from "../../types/constants";
-import { useProfileStore, useZodForm } from "../../utils";
-import { trpc } from "../../utils/trpc";
+} from "types/constants";
+import { ProfileSchema } from "utils/common/schemas";
+import { api } from "utils/trpc";
 
 export const Setup15: React.FC = () => {
 	const updateProfile = useProfileStore();
-	const { data: session } = useSession({ required: true });
 	const router = useRouter();
+	const {session} = useSession();
 
-	const createProfile = trpc.profile.create.useMutation({
+	const createProfile = api.profiles.create.useMutation({
 		onSuccess: async () => {
 			await router.push("/overview");
 			toast.success("Profile created!");
@@ -44,7 +44,7 @@ export const Setup15: React.FC = () => {
 				<>
 					<h1 className="text-5xl font-extrabold tracking-tight">
 						Congrats,{" "}
-						<span className="text-primary">{session?.user?.name}!</span>
+						<span className="text-primary">{session?.user?.username}!</span>
 					</h1>
 					<span className="rounded-md text-2xl shadow-lg">
 						Let&apos;s get some roomies.
@@ -56,10 +56,10 @@ export const Setup15: React.FC = () => {
 					>
 						<button
 							type="submit"
-							disabled={createProfile.isLoading}
-							className="btn-primary btn-outline btn w-40"
+							disabled={createProfile.isPending}
+							className="btn btn-outline btn-primary w-40"
 						>
-							{createProfile.isLoading ? (
+							{createProfile.isPending ? (
 								<>
 									<FaCircleNotch className="animate-spin" />
 								</>
@@ -80,7 +80,7 @@ export const Setup15: React.FC = () => {
 						</span>
 					</div>
 					<div className="m-8 max-h-96 w-full overflow-auto text-xs font-extralight tracking-tighter shadow-2xl">
-						<table className="table-compact table w-full">
+						<table className="table table-compact w-full">
 							<thead>
 								<tr>
 									<th>Section</th>

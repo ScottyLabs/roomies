@@ -1,6 +1,6 @@
 import type { Profile } from "@prisma/client";
 
-export type ProfileKeys = keyof Omit<Profile, "id" | "userId">;
+export type ProfileKeys = keyof Omit<Profile, "id" | "accountId">;
 
 export const ProfileLabels: Record<ProfileKeys, string> = {
 	aesthetic: "Aesthetic",

@@ -13,7 +13,7 @@ export const MobileProgress: React.FC<MobileProgressProps> = ({
 }) => {
 	return (
 		<div className="flex flex-col items-center">
-			<div className="fixed top-0 left-1/2 flex w-full -translate-x-1/2 items-center gap-4 p-5 lg:hidden">
+			<div className="fixed left-1/2 top-0 flex w-full -translate-x-1/2 items-center gap-4 p-5 lg:hidden">
 				<div className="flex-1">
 					<div
 						className="radial-progress text-primary"

@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { Media } from "@prisma/client";
+import { useZodForm } from "lib";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
-	FaCircleNotch,
 	FaDiscord,
 	FaFacebook,
 	FaInstagram,
 	FaSnapchat,
 	FaTwitter,
 } from "react-icons/fa";
+import { api } from "utils/trpc";
 import { z } from "zod";
-import { useZodForm } from "../../utils";
-import { trpc } from "../../utils/trpc";
 import { Dialog } from "../Dialog";
 import type { ProviderName } from "./ConnectionItem";
 import { ProviderNames } from "./ConnectionItem";
@@ -58,9 +57,9 @@ export const MediaList: React.FC = () => {
 	const [media, setMedia] = useState<Media | null>(null);
 	const [open, setOpen] = useState(false);
 
-	const context = trpc.useContext();
+	const context = api.useContext();
 
-	const createConnection = trpc.connections.create.useMutation({
+	const createConnection = api.connections.create.useMutation({
 		onSuccess: async () => {
 			toast.success("Connection created!");
 		},
@@ -69,17 +68,7 @@ export const MediaList: React.FC = () => {
 		},
 	});
 
-	const { data: connections, status } = trpc.connections.getAll.useQuery();
-
-	if (status === "loading")
-		return (
-			<div>
-				<button className="btn-disabled btn ">
-					<FaCircleNotch className="h-10 w-10 animate-spin" />;
-				</button>
-			</div>
-		);
-	if (status === "error") return <div>Error</div>;
+	const [connections] = api.connections.getAll.useSuspenseQuery();
 
 	return (
 		<>
@@ -103,7 +92,7 @@ export const MediaList: React.FC = () => {
 								What is your {ProviderNames[media!]} handle?
 							</span>
 							<input
-								className="input-bordered input w-full"
+								className="input input-bordered w-full"
 								type="text"
 								{...methods.register("handle")}
 							/>
@@ -114,13 +103,13 @@ export const MediaList: React.FC = () => {
 					</div>
 					<div className="modal-action">
 						<button
-							className="btn-ghost btn-sm btn"
+							className="btn btn-ghost btn-sm"
 							type="button"
 							onClick={() => setOpen(false)}
 						>
 							Cancel
 						</button>
-						<button className="btn-secondary btn-sm btn" type="submit">
+						<button className="btn btn-secondary btn-sm" type="submit">
 							Submit
 						</button>
 					</div>
@@ -136,7 +125,7 @@ export const MediaList: React.FC = () => {
 							setOpen(true);
 						}}
 						disabled={connections.some((c) => c.provider === data.media)}
-						className="btn-secondary tooltip btn-square btn flex cursor-pointer items-center justify-center"
+						className="btn btn-square tooltip btn-secondary flex cursor-pointer items-center justify-center"
 						data-tip={data.provider}
 					>
 						{data.icon}

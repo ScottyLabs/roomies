@@ -34,7 +34,7 @@ function TransitionProvider({ children }: PropsWithChildren) {
 				leave="transition-all duration-300"
 				leaveFrom="opacity-100"
 				leaveTo="opacity-0"
-				className="fixed top-0 left-0 z-[1000] flex h-full w-full items-center justify-center bg-base-100 bg-opacity-50 backdrop-blur"
+				className="fixed left-0 top-0 z-[1000] flex h-full w-full items-center justify-center bg-base-100 bg-opacity-50 backdrop-blur"
 			>
 				<span className="animate-pulse text-xl font-bold">
 					<FaCircleNotch className="h-10 w-10 animate-spin" />

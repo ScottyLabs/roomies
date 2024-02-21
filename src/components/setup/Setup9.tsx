@@ -1,8 +1,8 @@
 import { Volume } from "@prisma/client";
+import { useProfileStore, useZodForm } from "lib";
 import { useRouter } from "next/router";
-import { ProfileSchema } from "../../server/common/schemas";
-import { ProfileDescriptions } from "../../types/constants";
-import { useProfileStore, useZodForm } from "../../utils";
+import { ProfileDescriptions } from "types/constants";
+import { ProfileSchema } from "utils/common/schemas";
 
 export const Setup9: React.FC = () => {
 	const updateProfile = useProfileStore();
@@ -89,7 +89,7 @@ export const Setup9: React.FC = () => {
 						{methods.formState.errors.snore?.message}
 					</span>
 				</div>
-				<button type="submit" className="btn-primary btn mt-8">
+				<button type="submit" className="btn btn-primary mt-8">
 					Next
 				</button>
 			</form>

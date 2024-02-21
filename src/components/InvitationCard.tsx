@@ -1,15 +1,14 @@
 import { InvitationStatus } from "@prisma/client";
+import { useZodForm } from "lib";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
-import { FaCircleNotch } from "react-icons/fa";
-import { InvitationSchema } from "../server/common/schemas";
-import { useZodForm } from "../utils";
-import type { RouterOutputs } from "../utils/trpc";
-import { trpc } from "../utils/trpc";
-import { DashboardCard } from "./MainLayout";
+import { InvitationSchema } from "utils/common/schemas";
+import type { RouterOutputs } from "utils/trpc";
+import { api } from "utils/trpc";
+import { DashboardCard } from "./DashboardCard";
 
 type InvitationCardProps = {
-	profile: NonNullable<RouterOutputs["profile"]["byId"]>;
+	profile: NonNullable<RouterOutputs["profiles"]["byId"]>;
 };
 
 export default function InvitationCard({ profile }: InvitationCardProps) {
@@ -21,20 +20,17 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 		}),
 	});
 
-	const { data: theirMembership, status: theirMembershipStatus } =
-		trpc.membership.byUserId.useQuery({
-			userId: profile.userId,
-		});
+	const [[theirMembership, membership, outgoingInvitations, user]] =
+		api.useSuspenseQueries((t) => [
+			t.memberships.byAccountId({ accountId: profile.user.id }),
+			t.memberships.getCurrent(),
+			t.invitations.getOutgoing(),
+			t.users.byId({ id: profile.profile.accountId }),
+		]);
 
-	const { data: membership, status: membershipStatus } =
-		trpc.membership.getCurrent.useQuery();
+	const context = api.useContext();
 
-	const { data: outgoingInvitations, status: invitationStatus } =
-		trpc.invitations.getOutgoing.useQuery();
-
-	const context = trpc.useContext();
-
-	const createInvitation = trpc.invitations.create.useMutation({
+	const createInvitation = api.invitations.create.useMutation({
 		onSuccess: async () => {
 			await context.invitations.invalidate();
 			toast.success("Invitation sent");
@@ -44,7 +40,7 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 		},
 	});
 
-	const cancelInvitation = trpc.invitations.delete.useMutation({
+	const cancelInvitation = api.invitations.delete.useMutation({
 		onSuccess: async () => {
 			await context.invitations.invalidate();
 			toast.success("Invitation canceled");
@@ -53,28 +49,6 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 			toast.error("Failed to cancel invitation");
 		},
 	});
-
-	if (
-		invitationStatus === "loading" ||
-		membershipStatus === "loading" ||
-		theirMembershipStatus === "loading"
-	)
-		return (
-			<DashboardCard>
-				<FaCircleNotch className="animate-spin" />
-			</DashboardCard>
-		);
-
-	if (
-		invitationStatus === "error" ||
-		membershipStatus === "error" ||
-		theirMembershipStatus === "error"
-	)
-		return (
-			<DashboardCard>
-				Failed to load data. Please try again later.
-			</DashboardCard>
-		);
 
 	if (!membership)
 		return (
@@ -94,9 +68,9 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 	if (theirMembership)
 		return <DashboardCard>This user is already in a group.</DashboardCard>;
 
-	const invitation = outgoingInvitations.find(
+	const invitation = outgoingInvitations?.find(
 		(invitation) =>
-			invitation.receiverId === profile.userId &&
+			invitation.receiverId === profile.user.id &&
 			invitation.status === InvitationStatus.PENDING
 	);
 
@@ -110,7 +84,7 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 					<button
 						type="button"
 						onClick={() => cancelInvitation.mutate({ id: invitation.id })}
-						className="btn-error btn-sm btn"
+						className="btn btn-error btn-sm"
 					>
 						Cancel Invitation
 					</button>
@@ -123,7 +97,7 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 							createInvitation.mutate({
 								...data,
 								status: InvitationStatus.PENDING,
-								receiverId: profile.userId,
+								receiverId: profile.user.id,
 								groupId: membership.groupId,
 							});
 						})}
@@ -131,11 +105,11 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 						<div>
 							<label className="label">
 								<span className="label-text">
-									Send an optional message to {profile.user.name}
+									Send an optional message to {user.username}
 								</span>
 							</label>
 							<textarea
-								className="textarea-bordered textarea h-24 w-full"
+								className="textarea textarea-bordered h-24 w-full"
 								placeholder="Hi, would you like to join my group?"
 								{...methods.register("message")}
 							/>
@@ -144,7 +118,7 @@ export default function InvitationCard({ profile }: InvitationCardProps) {
 							</span>
 						</div>
 						<div className="form-control">
-							<button type="submit" className="btn-primary btn mt-2">
+							<button type="submit" className="btn btn-primary mt-2">
 								Send
 							</button>
 						</div>
