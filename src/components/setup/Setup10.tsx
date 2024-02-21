@@ -1,3 +1,5 @@
+"use client";
+
 import { ShowerTime } from "@prisma/client";
 import { useProfileStore, useZodForm } from "lib";
 import { useRouter } from "next/router";

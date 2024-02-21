@@ -1,3 +1,5 @@
+"use client";
+
 import { School, Sex, Status, Volume } from "@prisma/client";
 import { Dialog } from "components/Dialog";
 import { useZodForm } from "lib";

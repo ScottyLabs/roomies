@@ -1,3 +1,5 @@
+"use client";
+
 import { Transition } from "@headlessui/react";
 import { Toaster, ToastIcon } from "react-hot-toast";
 

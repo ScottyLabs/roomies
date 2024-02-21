@@ -1,3 +1,5 @@
+"use client";
+
 import { useSession } from "@clerk/nextjs";
 import {
 	Bathroom,
@@ -21,7 +23,7 @@ import { api } from "utils/trpc";
 
 export default function Page() {
 	const { session } = useSession();
-	const { data: profile } = api.profiles.getCurrent.useQuery();
+	const [{ profile }] = api.profiles.getCurrent.useSuspenseQuery();
 	const utils = api.useUtils();
 
 	const profileMutation = api.profiles.update.useMutation({

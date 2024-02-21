@@ -1,10 +1,11 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { CustomToaster } from "components/Toast";
-import { TrpcProvider } from "components/TrpcProvider";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import TransitionProvider from "providers/TransitionProvider";
+import { TrpcProvider } from "providers/TrpcProvider";
 import type { PropsWithChildren } from "react";
+
+import "styles/globals.css";
 
 export const metadata: Metadata = {
 	title: "Roomies",
@@ -17,9 +18,7 @@ export default function Layout({ children }: PropsWithChildren) {
 			<body>
 				<CustomToaster />
 				<ClerkProvider>
-					<TrpcProvider headers={headers()}>
-						<TransitionProvider>{children}</TransitionProvider>
-					</TrpcProvider>
+					<TrpcProvider headers={headers()}>{children}</TrpcProvider>
 				</ClerkProvider>
 			</body>
 		</html>

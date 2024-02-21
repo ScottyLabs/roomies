@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "utils/trpc";
 import { ConnectionItem } from "./ConnectionItem";
 

@@ -1,6 +1,8 @@
+"use client";
+
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { useEffect, type PropsWithChildren } from "react";
 import {
 	FaBars,
@@ -18,12 +20,12 @@ import { api } from "utils/trpc";
 
 export default function Layout({ children }: PropsWithChildren) {
 	const invitations = api.invitations.getIncoming.useQuery();
-	const router = useRouter();
+	const pathname = usePathname();
 
 	useEffect(() => {
 		const drawer = document.getElementById("my-drawer-2") as HTMLInputElement;
 		if (drawer) drawer.checked = false;
-	}, [router.pathname]);
+	}, [pathname]);
 
 	return (
 		<div className="drawer drawer-mobile">

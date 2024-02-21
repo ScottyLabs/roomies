@@ -1,4 +1,6 @@
+"use client";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import type { Media } from "@prisma/client";
 import { useZodForm } from "lib";
 import { useState } from "react";
