@@ -11,6 +11,11 @@
 		"lint": "next lint",
 		"start": "next start"
 	},
+	"engines": {
+		"node": "18.x",
+		"npm": ">=7.0.0",
+		"yarn": ">=1.19.0 < 2.0.0"
+	},
 	"dependencies": {
 		"@clerk/nextjs": "^4.29.7",
 		"@headlessui/react": "^1.7.13",
