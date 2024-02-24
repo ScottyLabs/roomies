@@ -4,6 +4,7 @@ import {
 	unstable_httpBatchStreamLink,
 	type CreateTRPCClientOptions,
 } from "@trpc/client";
+import { env } from "env/client.mjs";
 import SuperJSON from "superjson";
 import type { AppRouter } from "./root";
 
@@ -30,7 +31,8 @@ export const trpcOptions: (
 				(opts.direction === "down" && opts.result instanceof Error),
 		}),
 		unstable_httpBatchStreamLink({
-			url: "/api/trpc",
+			// needs absolute URL in SSR
+			url: `${env.NEXT_PUBLIC_URL}/api/trpc`,
 			headers: () => {
 				return Object.fromEntries(new Map(headers));
 			},

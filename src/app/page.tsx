@@ -10,17 +10,31 @@ function Login() {
 	const { session, isSignedIn } = useSession();
 
 	return (
-		<div>
+		<div className="flex flex-col items-center justify-center gap-4">
 			<p className="text-center text-2xl">
 				{isSignedIn ? (
-					<span>Logged in as {session.user.username}</span>
+					<span>
+						Logged in as {session.user.firstName} {session.user.lastName}
+					</span>
 				) : (
 					<span>
 						Join <span className="font-mono">{count}</span> others!
 					</span>
 				)}
 			</p>
-			{isSignedIn ? <SignOutButton /> : <SignInButton />}
+			{isSignedIn ? (
+				<SignOutButton>
+					<button className="btn btn-ghost rounded-full bg-white/10">
+						Sign out
+					</button>
+				</SignOutButton>
+			) : (
+				<SignInButton>
+					<button className="btn btn-ghost rounded-full bg-white/10">
+						Sign in
+					</button>
+				</SignInButton>
+			)}
 		</div>
 	);
 }

@@ -1,7 +1,9 @@
+"use client";
+
 import { useSession } from "@clerk/nextjs";
 import { useProfileStore, useZodForm } from "lib";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { FaCircleNotch } from "react-icons/fa";
@@ -17,7 +19,7 @@ import { api } from "utils/trpc";
 export const Setup15: React.FC = () => {
 	const updateProfile = useProfileStore();
 	const router = useRouter();
-	const {session} = useSession();
+	const { session } = useSession();
 
 	const createProfile = api.profiles.create.useMutation({
 		onSuccess: async () => {
@@ -105,11 +107,7 @@ export const Setup15: React.FC = () => {
 												</Link>
 											</th>
 											<td>
-												{
-													ProfileLabels[
-														entry as keyof (typeof methods)["formState"]["errors"]
-													]
-												}
+												{ProfileLabels[entry as keyof typeof ProfileLabels]}
 											</td>
 											<td className="font-thin">{error.message}</td>
 										</tr>

@@ -18,8 +18,12 @@ export const createTRPCContext = async (opts: {
 	let account: Account | null = null;
 
 	if (session.userId) {
-		account = await prisma.account.findUnique({
+		account = await prisma.account.upsert({
 			where: {
+				id: session.userId,
+			},
+			update: {},
+			create: {
 				id: session.userId,
 			},
 		});

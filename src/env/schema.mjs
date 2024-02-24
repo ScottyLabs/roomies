@@ -18,6 +18,7 @@ export const serverSchema = z.object({
  */
 export const clientSchema = z.object({
 	NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
+	NEXT_PUBLIC_URL: z.string().url(),
 });
 
 /**
@@ -30,4 +31,5 @@ export const clientEnv = {
 	// NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 	NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
 		process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+	NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
 };

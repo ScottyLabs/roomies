@@ -1,3 +1,5 @@
+"use client";
+
 import Groupless from "components/Groupless";
 import { api } from "utils/trpc";
 import { ActionCard } from "./ActionCard";
@@ -9,10 +11,10 @@ export default function Page() {
 	if (!membership) return <Groupless />;
 
 	return (
-		<>
+		<div>
 			<div className="w-full text-3xl font-bold">Your Roommate Group</div>
 			<GroupCard membership={membership} />
 			<ActionCard membership={membership} />
-		</>
+		</div>
 	);
 }

@@ -8,7 +8,7 @@ export const Profile = ({ profile, user }: ProfileProps) => {
 	return (
 		<article className="relative w-full max-w-sm overflow-hidden rounded-lg bg-base-300 shadow-2xl hover:bg-base-100">
 			<Link className="absolute inset-0" href={`/profiles/${profile.id}`} />
-			<div className="aspect-[19/9] flex w-full">
+			<div className="flex aspect-[19/9] w-full">
 				<Image
 					className="object-cover"
 					src={user.imageUrl ?? ""}

@@ -9,7 +9,7 @@ export const Setup1: React.FC = () => {
 	return (
 		<div className="flex flex-col items-center gap-16">
 			<h1 className="text-5xl font-extrabold tracking-tight text-white">
-				Hello, <span className="text-primary">{session?.user.username}!</span>
+				Hello, <span className="text-primary">{session?.user.firstName}!</span>
 			</h1>
 			<h3 className="rounded-md text-2xl text-white shadow-lg">
 				Let&apos;s set up your account.

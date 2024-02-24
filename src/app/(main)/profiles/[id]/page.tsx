@@ -1,7 +1,8 @@
+"use client";
+
 import { DashboardCard } from "components/DashboardCard";
 import { Dialog } from "components/Dialog";
 import InvitationCard from "components/InvitationCard";
-import Image from "next/image";
 import { useState } from "react";
 import {
 	FaBath,
@@ -47,7 +48,7 @@ export default function Page({ params }: { params: { id: string } }) {
 									{profile.status}
 								</span>
 								<div className="mask mask-circle w-36">
-									<Image
+									<img
 										src={user.imageUrl ?? ""}
 										alt=""
 										width={128}
@@ -91,7 +92,7 @@ export default function Page({ params }: { params: { id: string } }) {
 											Beta
 										</span>
 										<div className="w-16 rounded-full">
-											<Image
+											<img
 												src={current.imageUrl ?? ""}
 												alt=""
 												width={64}
@@ -111,7 +112,7 @@ export default function Page({ params }: { params: { id: string } }) {
 						</div>
 					</div>
 				</DashboardCard>
-				<InvitationCard profile={profile} />
+				<InvitationCard profile={{ profile, user }} />
 				<DashboardCard>
 					<div className="flex flex-wrap gap-4">
 						<div className="flex flex-1 flex-col items-center rounded-lg bg-base-100 p-4">

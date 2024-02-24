@@ -2,7 +2,7 @@
 
 import { ShowerTime } from "@prisma/client";
 import { useProfileStore, useZodForm } from "lib";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { ProfileDescriptions } from "types/constants";
 import { ProfileSchema } from "utils/common/schemas";
 

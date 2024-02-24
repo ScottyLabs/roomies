@@ -10,7 +10,7 @@ export default function Overview() {
 						<h1>A Quick Overview</h1>
 						<p>
 							Roomies is a platform for finding roommates. It is designed to be
-							used by college students.
+							used by CMU college students.
 						</p>
 						<h3>How does it work?</h3>
 						<p>
